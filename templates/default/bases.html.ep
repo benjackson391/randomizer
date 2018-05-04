@@ -1,0 +1,32 @@
+% layout 'dashboard';
+<div class="container">
+    <div class="row">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-4">
+            <h1>Базы</h1>
+        </div>
+        <div class="col-sm-7">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <% foreach (keys %$files) {%>
+            <b><%= $files->{$_} %></b> (<%= $_ %>)<br>
+            <% } %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+
+            <form method="post" action="/bases" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="upload_file">Файл</label>
+                    <input type="file" class="form-control" id="upload_file" name="upload_file" required>
+                </div>
+                <button id="submit" type="submit" class="btn btn-primary">Сгенерировать!</button>
+            </form>
+        </div>
+    </div>
+</div>
+

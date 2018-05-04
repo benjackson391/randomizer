@@ -1,0 +1,5 @@
+% layout 'default';
+% title 'Welcome';
+<% if (my $message = flash 'message' ) { %>
+    <b><%= $message %></b><br>
+<% } %>

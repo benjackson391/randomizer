@@ -1,0 +1,12 @@
+% layout 'dashboard';
+<div class="container">
+    <% if (my $message = flash 'message' ) { %>
+    <b><%= $message %></b><br>
+    <% } %>
+
+    <br><br><br><br><br>
+    % foreach (sort { $a <=> $b } keys %$logs) {
+    <div><%= $logs->{$_} %></div>
+    % }
+</div>
+
