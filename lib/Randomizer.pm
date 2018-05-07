@@ -30,9 +30,9 @@ sub startup {
 
     $self->mode('development');
     $self->plugin('database', {
-        dsn      => 'dbi:mysql:dbname=loto:host=192.168.10.114',
-        username => 'root' || q{},
-        password => 'JM47art1' || q{},
+        dsn      => $self->config->{dsn},
+        username => $self->config->{user} || q{},
+        password => $self->config->{password}  || q{},
         options  => { mysql_enable_utf8 => 1, RaiseError => 1 },
         helper   => 'db',
     });
@@ -111,6 +111,11 @@ sub startup {
     #users
     $r->get('/users')->to('users#list');
     $r->post('/users')->to('users#add');
+
+    $r->get('/download')->to('download#main');
+    $r->get('/download/<:dir>')->to('download#main');
+    $r->get('/download/<:dir>/<:file>')->to('download#main');
+
     $r->any('/login')->to('default#login');
 }
 

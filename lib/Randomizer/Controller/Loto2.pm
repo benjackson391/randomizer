@@ -5,6 +5,10 @@ use Mojo::Upload;
 use File::Basename;
 use File::Find::Rule;
 use Archive::Zip qw( :ERROR_CODES );
+use IO::Compress::Zip qw(:all);
+use Archive::Zip;
+use Data::Dumper;
+#use File::Slurp;
 use utf8;
 
 
@@ -47,29 +51,37 @@ sub generate2 {
         my $size = $fileuploaded->size;
         my $name = $fileuploaded->filename;
 
-        my $dir = 'uploaded/' . b64_encode ($self->session('user') . time );
+        my $dir = 'uploaded/' . b64_encode ($self->session('user') . " :: " .  time );
         chomp($dir);
         $name = 'base.csv';
         mkdir $dir, 0755;
         $fileuploaded->move_to("$dir/$name");
 
         my $cnf = $self->config->{loto2}->{$type};
+        my $log = $self->app->log;
 
-        if ($cnf->{add_null_row}) {
-            $self->add_null_row({
-                name => "$dir/$name",
-                add_null => $cnf->{add_null},
-                null_row => $cnf->{null_row},
-            });
-        }
+        $log->debug("name: $name; dir: $dir");
+        $log->debug( Dumper($cnf) );
 
         if ($cnf->{regexp_modify}) {
+                $log->debug('regexp modified');
             $self->regexp_modify({
                 name => $name,
                 dir => $dir,
                 regex => $cnf->{regex},
                 substition => $cnf->{substition},
             });
+            $log->debug('regexp modified');
+        }
+
+        $log->debug('base uploaded');
+        if ($cnf->{add_null_row}) {
+            $self->add_null_row({
+                name => "$dir/$name",
+                add_null => $cnf->{add_null},
+                null_row => $cnf->{null_row},
+            });
+            $log->debug('added null row');
         }
 
         if ($cnf->{create_ckeckfile}) {
@@ -83,29 +95,40 @@ sub generate2 {
                 check2 => $Check2,
                 check3 => $Check3,
             });
+            $log->debug('checkfile created');
         }
         if ($cnf->{xtoplus}) {
-            $self->create_ckeckfile({
+            $self->x_to_plus({
                 name => $name,
                 dir => $dir,
             });
+            $log->debug('X to plus changed');
         }
 
-        my @files = File::Find::Rule->file()->name( '*.csv' )->in( $dir );
+        if ($cnf->{add_null_row} || $cnf->{regexp_modify} || $cnf->{create_ckeckfile} || $cnf->{xtoplus} ) {
+            my @files = File::Find::Rule->file()->name( '*.csv' )->in( $dir );
+            my $obj = Archive::Zip->new();
+            foreach (@files) {
+                $obj->addFile($_, basename($_));
+            }
+            $self->logger($dir . ' :: ' . $cnf->{name} . ' :: ' . $OrderNumber );
+            if ($obj->writeToFileNamed("$dir/$OrderNumber.zip") == AZ_OK) {
+            $log->debug('archive created');
 
-        my $obj = Archive::Zip->new();
-        foreach (@files) {
-            $obj->addFile($_, basename($_));
+            $self->render_file(
+                'filepath' => "$dir/$OrderNumber.zip",
+                'format'   => 'application/x-download',
+                'content_disposition' => 'inline',
+                'cleanup'  => 0,
+                );
+            } else {
+                $self->flash( message => 'Ошибка ' . $self->tx->local_address . "/download/" . $dir );
+                $self->render( template => 'default/loto2' );
+            }
+        } else {
+            $self->flash( message => 'Файл не требует изменений!' );
+            $self->render( template => 'default/loto2' );
         }
-        if ($obj->writeToFileNamed("$OrderNumber.zip") == AZ_OK) {
-        $self->render_file(
-            'filepath' => "$OrderNumber.zip",
-            'format'   => 'application/x-download',
-            'content_disposition' => 'inline',
-            'cleanup'  => 1,
-            );
-        }
-        #$self->redirect_to('/loto2');
     }
 }
 

@@ -17,19 +17,18 @@ sub register {
             $module = $1;
 
             my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time);
-
-            $sec = "0$sec" if $sec < 9;
-            $min = "0$min" if $min < 9;
-            $hour = "0$hour" if $hour < 9;
-            $mday = "0$mday" if $mday < 9;
-            $mon = "0$mon" if $mon < 9;
-
+            my ($ssec, $mmin, $hhour, $mmday, $mmon);
+            $sec < 9 ? $ssec = "0$sec" : $ssec = $sec;
+            $min < 9 ? $mmin = "0$min" : $mmin = $min;
+            $hour < 9 ? $hhour = "0$hour" : $hhour = $hour;
+            $mday < 9 ? $mmday = "0$mday" : $mmday = $mday;
+            $mon < 9 ? $mmon = "0$mon" : $mmon = $mon;
             $year += 1900;
 
-            my $string = "[ $mday-$mon-$year $hour:$min:$sec ][ $module ] $param";
+            my $string = "[ $mmday-$mmon-$year $hhour:$mmin:$ssec ][ $module ] $param";
 
             open my $fh, ">>", "log/logger";
-            print $fh $string ;
+            print $fh "$string\n" ;
             close $fh;
 
             return 1;

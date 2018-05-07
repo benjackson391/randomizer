@@ -1,6 +1,9 @@
 package Randomizer::Controller::Logs;
 use Mojo::Base 'Mojolicious::Controller';
+use Encode::Detect::Detector;
 use Data::Dumper;
+use Encode;
+use utf8;
 
 sub main {
     my $self = shift;
@@ -13,7 +16,7 @@ sub main {
         $self->app->log->debug("log main");
         my %logs;
         my $line = 1;
-        open (my $fn, '<', 'log/logger') or $self->app->log->debug("Can't open log file");
+        open (my $fn, '<:utf8', 'log/logger') or $self->app->log->debug("Can't open log file");
         while (<$fn>) {
             $logs{$line} = $_;
             $line++;
