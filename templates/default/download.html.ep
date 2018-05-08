@@ -1,26 +1,33 @@
 % layout 'dashboard';
-<table class="table">
-    <thead>
-        <tr>
-            <th>Тип</th>
-            <th>Заказ</th>
-            <th>Логин</th>
-            <th>Дата</th>
-        </tr>
-    </thead>
-    <tbody>
-    <% foreach (sort {$a <=> $b} keys %$files) {%>
-    <tr>
-        <td><%= $files->{$_}->{name} %></td>
-        <td><a href="download/<%= $files->{$_}->{dir64} %>"><%= $files->{$_}->{order} %></a></td>
-        <td><%= $files->{$_}->{login} %></td>
-        <td class="dl"><%= $files->{$_}->{date} %></td>
-    </tr>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Тип</th>
+                    <th>Заказ</th>
+                    <th>Логин</th>
+                    <th>Дата</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% foreach (sort {$a <=> $b} keys %$files) {%>
+                <tr>
+                    <td><%= $files->{$_}->{name} %></td>
+                    <td><a href="download/<%= $files->{$_}->{dir64} %>"><%= $files->{$_}->{order} %></a></td>
+                    <td><%= $files->{$_}->{login} %></td>
+                    <td class="dl"><%= $files->{$_}->{date} %></td>
+                </tr>
 
-    <% } %>
+                <% } %>
 
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 
 
 <script>
