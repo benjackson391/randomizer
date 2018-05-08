@@ -60,11 +60,23 @@ sub generate2 {
         my $cnf = $self->config->{loto2}->{$type};
         my $log = $self->app->log;
 
-        $log->debug("name: $name; dir: $dir");
-        $log->debug( Dumper($cnf) );
+        my $part = 1;
+        open IN, '<', $dir/$name;
+        while (<IN>) {
+            $part++ if ( $. % 1000000 ) == 0;
+            open OUT, '>>', "$dir/$part\_$name";
+            print OUT $_;
+        }
+        close IN;
+        close OUT;
+
+#        $self->splitter({
+#            name => $name,
+#            dir => $dir,
+#        });
 
         if ($cnf->{regexp_modify}) {
-                $log->debug('regexp modified');
+                $log->debug('regexp modify start');
             $self->regexp_modify({
                 name => $name,
                 dir => $dir,
@@ -77,7 +89,8 @@ sub generate2 {
         $log->debug('base uploaded');
         if ($cnf->{add_null_row}) {
             $self->add_null_row({
-                name => "$dir/$name",
+                name => $name,
+                dir => $dir,
                 add_null => $cnf->{add_null},
                 null_row => $cnf->{null_row},
             });

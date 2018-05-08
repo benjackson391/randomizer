@@ -15,7 +15,14 @@ sub register {
             my $pack_number = 1;
             my $line_number = 1;
             my %checklist;
-            open ( FILE, $param->{dir} . '/'. $param->{name} ) or die;
+
+            my $dir = $param->{dir};
+            my $name = $param->{name};
+            my $dn = "$dir/$name";
+            $dn = "$dir/output_$name" if ( -f "$dir/output_$name" );
+
+
+            open ( FILE, $dn ) or die;
             while ( my $line1 = <FILE> ) {
                 if ( $line_number == 1 ) {
                     chomp($line1);

@@ -27,6 +27,7 @@ sub startup {
     $self->plugin('Randomizer::Helpers::CreateCheckFile');
     $self->plugin('Randomizer::Helpers::XToPlus');
     $self->plugin('Randomizer::Helpers::Logger');
+    $self->plugin('Randomizer::Helpers::Splitter');
 
     $self->mode('development');
     $self->plugin('database', {
