@@ -104,6 +104,9 @@ sub startup {
     #randomizer3
     $r->get('/loto3')->to('loto3#loto3');
     $r->post('/loto3/upload')->to('loto3#generate3');
+    #vending
+    $r->get('/loto4')->to('loto4#main');
+    $r->post('/loto4')->to('loto4#generate');
     #bases
     $r->get('/bases')->to('bases#main');
     $r->post('/bases')->to('bases#upload');

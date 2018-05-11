@@ -1,4 +1,4 @@
-package Randomizer::Controller::Loto2;
+package Randomizer::Controller::Loto4;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Util qw(b64_encode b64_decode);
 use Mojo::Upload;
@@ -12,7 +12,7 @@ use Data::Dumper;
 use utf8;
 
 
-sub loto2 {
+sub main {
     my $self = shift;
     if ( not $self->user_exists ) {
         $self->flash( message => 'You must log in to view this page' );
@@ -21,12 +21,14 @@ sub loto2 {
     }
     else {
 
-        $self->stash( lotos => $self->config->{loto2} );
-        $self->render( template => 'default/loto2' );
+        my $cnf = $self->config->{loto4};
+
+        $self->stash( lotos => $cnf );
+        $self->render( template => 'default/loto4' );
     }
 }
 
-sub generate2 {
+sub generate {
     my $self = shift;
     if ( not $self->user_exists ) {
         $self->flash( message => 'You must log in to view this page' );
@@ -59,11 +61,11 @@ sub generate2 {
         # do the perl file copy here:
         copy("$dir/$name", "$dir/$name.dist");
 
-        my $cnf = $self->config->{loto2}->{$type};
+        my $cnf = $self->config->{loto4}->{$type};
         my $log = $self->app->log;
 
         if ($cnf->{regexp_modify}) {
-                $log->debug('regexp modify start');
+            $log->debug('regexp modify start');
             $self->regexp_modify({
                 name => $name,
                 dir => $dir,
@@ -111,13 +113,13 @@ sub generate2 {
             }
             $self->logger($dir . ' :: ' . $cnf->{name} . ' :: ' . $OrderNumber );
             if ($obj->writeToFileNamed("$dir/$OrderNumber.zip") == AZ_OK) {
-            $log->debug('archive created');
+                $log->debug('archive created');
 
-            $self->render_file(
-                'filepath' => "$dir/$OrderNumber.zip",
-                'format'   => 'application/x-download',
-                'content_disposition' => 'inline',
-                'cleanup'  => 0,
+                $self->render_file(
+                    'filepath' => "$dir/$OrderNumber.zip",
+                    'format'   => 'application/x-download',
+                    'content_disposition' => 'inline',
+                    'cleanup'  => 0,
                 );
             } else {
                 $self->flash( message => 'Ошибка ' . $self->tx->local_address . "/download/" . $dir );

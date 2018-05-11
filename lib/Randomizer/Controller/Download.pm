@@ -23,14 +23,11 @@ sub main {
             $l->debug('--- ' . $self->param("dir"));
 
             if ($self->param("file")) {
-                #$l->debug('--- ' . $self->param("file"));
-                #$l->debug('--- ' . $self->param('dir') . '/' . $self->param('file'));
                 my @file = File::Find::Rule->file()
                     ->name($self->param('file') . '.*' )
                     ->in( 'uploaded/'.$self->param('dir') );
-                $l->debug('--- ' . $self->param("file") . '  :::  ' . Dumper( @file ) );
+
                 $self->render_file(
-                    #'filepath' => 'uploaded/' . $self->param('dir') . '/' . $self->param('file'),
                     'filepath' => $file[0],
                     'format'   => 'application/x-download',
                     'content_disposition' => 'inline',
@@ -44,24 +41,6 @@ sub main {
                 $self->render( template => 'default/download2', files => \@dirs );
             }
         } else {
-            #opendir(my $dh, "uploaded");
-            #my @dirs = readdir($dh);
-            #$self->app->log->debug( '---' . Dumper( \@dirs ));
-
-            #my %dirs;
-            #foreach (@dirs) {
-            #    next if $_ eq '.';
-            #    next if $_ eq '..';
-            #    my @dir =  split( " :: ", b64_decode($_));
-
-#                $dirs{ $dir[1] } = $dir[0];
- #           }
-            #my %dirs = map { split( " :: ", b64_decode($_), 2 ) } @dirs;
-            #%dirs = map { Mojo::Date->new($dirs{$_}) => $_ } keys %dirs;
-            #%dirs = map { $dirs{$_} => $_ } keys %dirs;
-            #my $dir2 = %dirs;
-#            $self->app->log->debug( '---' . Dumper( \%dirs));
-#            $self->stash( files => \%dirs );
             my %items;
             open (LOG, '<:utf8', 'log/logger') or die;
 
@@ -71,15 +50,15 @@ sub main {
                 $self->app->log->debug(Dumper( \@line));
                 $line[0] =~ s/^\[.+\]\[.+\]\s(.*)$/${1}/;
                 push @line, ( split "/", $line[0] );
-                $items{$.}{name} = $line[1];
-                $items{$.}{order} = $line[2];
-                $items{$.}{dir} = $line[3];
-                $items{$.}{dir64} = $line[4];
+                ($items{$.}{name}, $items{$.}{order}, $items{$.}{dir}, $items{$.}{dir64}) = ($line[1], $line[2], $line[3], $line[4] );
                 ($items{$.}{login}, $items{$.}{date}) = split ' :: ', b64_decode($line[4]);
+                $items{$.}{basefile} = 1 if -r "uploaded/$line[4]/base.csv";
+                $items{$.}{checklist} = 1 if -f "uploaded/$line[4]/check_list.csv";
+                $items{$.}{archive} = 1 if -f "uploaded/$line[4]/" . $items{$.}{order} . ".zip";
             }
             close LOG;
-            $self->app->log->debug( '---' . Dumper( \%items));
-            $self->stash( files => \%items );
+            #$self->app->log->debug( '---' . Dumper( \%items));
+            $self->stash( files => \%items, dumper => Dumper( \%items) );
             $self->render( template => 'default/download' );
         }
 

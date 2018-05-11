@@ -1,0 +1,59 @@
+% layout 'dashboard';
+<div class="container">
+    <div class="row">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-4">
+            <h1>Открытки</h1>
+        </div>
+        <div class="col-sm-7">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <form action="/loto4" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="Type">тип</label>
+                    % foreach ( sort {$a <=> $b} keys %$lotos) {
+                    <div class="radio">
+                        <label><input type="radio" id="Type" name="Type" value='<%= $_ %>'><%= $lotos->{$_}->{name} %></label>
+                    </div>
+                    % }
+                </div>
+                <div class="form-group">
+                    <label for="OrderNumber">Номер заказа</label>
+                    <input type="text" class="form-control" id="OrderNumber" name="OrderNumber" placeholder="..." required>
+                </div>
+                <div class="form-group">
+                    <label for="Draw">Номер тиража</label>
+                    <input type="text" class="form-control" id="Draw" name="Draw" placeholder="..." value='-' required>
+                </div>
+                <div class="form-group">
+                    <label for="Check1">Проверка 1</label>
+                    <input type="text" class="form-control" id="Check1" name="Check1" placeholder="..." value='1' required>
+                </div>
+                <div class="form-group">
+                    <label for="Check2">Проверка 2</label>
+                    <input type="text" class="form-control" id="Check2" name="Check2" placeholder="..." value='1' required>
+                </div>
+                <div class="form-group">
+                    <label for="Check3">Контрольное число</label>
+                    <select class="form-control" id="Check3" name='Check3' required>
+                        <option value='0'>нет</option>
+                        <option value='1' selected>да</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="Check3" name="Check3" placeholder="..." value='1' required> -->
+                </div>
+                <div class="form-group">
+                    <label for="upload_file">Файл</label>
+                    <input type="file" class="form-control" id="upload_file" name="upload_file" required>
+                </div>
+                <button id="submit" type="submit" class="btn btn-primary">Загрузить</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+</script>

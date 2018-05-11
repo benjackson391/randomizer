@@ -1,52 +1,52 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-     <link rel="stylesheet" href="https://www.malot.fr/bootstrap-datetimepicker/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"> -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <title>Randomizer</title>
-    <style>
-      body {font-family: "Lato", sans-serif;}
-      .sidenav {height: 100%;width: 200px;position: fixed;z-index: 1;top: 0;
-          left: 0;background-color: #111;overflow-x: hidden;padding-top: 20px;}
-      .sidenav a {padding: 6px 6px 6px 32px;text-decoration: none;
-          font-size: 18px;color: #818181;display: block;}
-      .sidenav a:hover {color: #f1f1f1;}
-      .main {margin-left: 200px;}
-      @media screen and (max-height: 450px) {
-        .sidenav {padding-top: 15px;}
-        .sidenav a {font-size: 18px;}
-      }
-    </style>
-  </head>
-  <body>
-    <div class="sidenav">
-      <a href="/loto1">Предзаполненные</a>
-      <a href="/loto2">Бланки</a>
-      <a href="/loto3">Открытки</a>
-      <a href="/bases">Базы</a>
-      <a href="/logs">Лог</a>
-      <a href="/download">Загрузки</a>
-      <a href="/users">Пользователи</a>
-      <a href="/logout">Выход</a>
-    </div>
-    <div class="main">
-      <%= content %>
-    </div>
-    <script type="text/javascript">
-    var path = window.location.pathname;
-    $("a[href='." + path + "']").css("color", "white");
-    </script>
-  </body>
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+         <link rel="stylesheet" href="https://www.malot.fr/bootstrap-datetimepicker/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+            <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"> -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <title>Randomizer</title>
+        <style>
+            body {font-family: "Lato", sans-serif;}
+            .sidenav {height: 100%;width: 200px;position: fixed;z-index: 1;top: 0;
+              left: 0;background-color: #111;overflow-x: hidden;padding-top: 20px;}
+            .sidenav a {padding: 6px 6px 6px 32px;text-decoration: none;
+              font-size: 18px;color: #818181;display: block;}
+            .sidenav a:hover {color: #f1f1f1;}
+            .main {margin-left: 200px;}
+            @media screen and (max-height: 450px) {
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 18px;}
+            }
+        </style>
+    </head>
+    <body>
+        <div class="sidenav">
+            <a href="/loto1">Предзаполненные</a>
+            <a href="/loto2">Бланки</a>
+            <a href="/loto3">Открытки</a>
+            <a href="/loto4">Вендинг</a>
+            <a href="/bases">Базы</a>
+            <a href="/download">Загрузки</a>
+            <a href="/users">Пользователи</a>
+            <a href="/logout">Выход</a>
+        </div>
+        <div class="main">
+            <%= content %>
+        </div>
+        <script type="text/javascript">
+            var path = window.location.pathname;
+            $("a[href='." + path + "']").css("color", "white");
+        </script>
+    </body>
 </html>
