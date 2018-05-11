@@ -26,7 +26,6 @@
             </table>
         </div>
     </div>
-    <div class="row"><%= $dumper %></div>
 </div>
 
 

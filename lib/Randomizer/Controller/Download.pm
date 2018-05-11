@@ -58,7 +58,7 @@ sub main {
             }
             close LOG;
             #$self->app->log->debug( '---' . Dumper( \%items));
-            $self->stash( files => \%items, dumper => Dumper( \%items) );
+            $self->stash( files => \%items );
             $self->render( template => 'default/download' );
         }
 
