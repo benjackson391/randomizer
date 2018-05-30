@@ -2,6 +2,7 @@ package Randomizer::Helpers::Logger;
 use base 'Mojolicious::Plugin';
 use Modern::Perl;
 use Data::Dumper;
+use utf8;
 
 sub register {
 

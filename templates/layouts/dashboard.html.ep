@@ -32,11 +32,8 @@
     </head>
     <body>
         <div class="sidenav">
-            <a href="/loto1">Предзаполненные</a>
-            <a href="/loto2">Бланки</a>
-            <a href="/loto3">Открытки</a>
-            <a href="/loto4">Вендинг</a>
-            <a href="/bases">Базы</a>
+            <a href="/tickets">Билеты</a>
+            <!--<a href="/bases">Базы</a>-->
             <a href="/download">Загрузки</a>
             <a href="/users">Пользователи</a>
             <a href="/logout">Выход</a>
@@ -46,7 +43,8 @@
         </div>
         <script type="text/javascript">
             var path = window.location.pathname;
-            $("a[href='." + path + "']").css("color", "white");
+            console.log(path);
+            $("a[href='" + path + "']").css("color", "white");
         </script>
     </body>
 </html>

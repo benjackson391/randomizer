@@ -2,22 +2,50 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <% foreach (@$files) {%>
-            <a class='dl' href="<%= $_ %>"><%= $_ %></a><br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Файл</th>
+                        <th>Размер</th>
+                    </tr>
+                </thead>
+                <tbody>
+            <% foreach ( keys %$files) {%>
+                    <tr>
+                        <td><a class='dl' href="<%= $_ %>"><%= $_ %></a></td>
+                        <td class="size"><%= $files->{$_} %></td>
+                    </tr>
             <% } %>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
 
 <script>
-    $.each($('a.dl'), function( ) {
-        var href = $(this).attr('href');
 
-        // var encoded = btoa(href);
-        var real_href = window.location.pathname;
-        $(this).attr('href', real_href + '/' + href);
+function b64EncodeUnicode(str) {
+return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+return String.fromCharCode(parseInt(p1, 16))
+}))
+}
 
-        console.log( href + ": " + real_href );
-    });
+$.each($('a.dl'), function( ) {
+    $(this).text(atob($(this).text()));
+    var href = $(this).attr('href');
+    //href = b64EncodeUnicode(href);
+    var real_href = window.location.pathname;
+    $(this).attr('href', real_href + '/' + href);
+
+    console.log( href + ": " + real_href );
+});
+
+$.each($('td.size'), function( ) {
+    var val = $(this).text();
+    if ( val < 1024 ) { $(this).text(val + ' байт') }
+    if ( (val > 1024) && (val < 1024 * 1024 ) ) { $(this).text( Math.round( val / 1024 ) + ' Килобайт') }
+    if ( val > 1024* 1024 ) { $(this).text( Math.round( val / 1024 * 1024 ) + ' Мегабайт') }
+
+});
 </script>

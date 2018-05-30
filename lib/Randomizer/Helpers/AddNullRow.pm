@@ -16,10 +16,14 @@ sub register {
             my @lines;
             tie @lines, 'Tie::File', $name;
             my $lines = $#lines + 1;
+            my $first_line = $lines[0];
             my $last_line = $lines[$#lines];
             untie @lines;
 
-            $log->debug("[Helpers::AddNullRow] lines: $lines in $name");
+            if (! $param->{null_row}) {
+                my @arr = split ';', $first_line;
+                $param->{null_row} = ';' x @arr;
+            }
 
             my $residue = $lines % $param->{add_null};
 

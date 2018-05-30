@@ -31,7 +31,6 @@ sub register {
                 if ( !($line_number % ($tickets_in_pack * $packs_in_box))) {
                     chomp($line1);
                     $checklist{$line_number} = $line1;
-                    #      last if $line_number == 36000;
                     defined(my $line2 = <FILE>) or last;
                     $line_number++;
                     chomp($line2);
@@ -55,12 +54,9 @@ sub register {
                 } else {
                     $row .= ";$1;$pack_number;" . ($pack_number + 59) . $param->{check1} . ';'. $param->{check2} . ';'. $param->{check3} . ';';
                     $pack_number += 60;
-                    ###
-                    #      print "$row\n";
                     open(my $fh, ">>", $param->{dir} . '/check_list.csv') or die "Could not open 'check_list' $!\n";
                     print $fh "$row\n";
                     close $fh;
-                    ###
                     $row = '';
                     $box_number++;
                 }

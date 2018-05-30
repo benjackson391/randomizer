@@ -1,7 +1,6 @@
 package Randomizer::Controller::Default;
 use Mojo::Base 'Mojolicious::Controller';
 
-# This action will render a template
 sub welcome {
   my $self = shift;
   if ( not $self->user_exists ) {

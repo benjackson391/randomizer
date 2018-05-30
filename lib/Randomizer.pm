@@ -23,11 +23,11 @@ sub startup {
 
     $self->plugin('Randomizer::Helpers::AddNullRow');
     $self->plugin('Randomizer::Helpers::RegexpModify');
-    $self->plugin('Randomizer::Helpers::ChangeChar');
     $self->plugin('Randomizer::Helpers::CreateCheckFile');
     $self->plugin('Randomizer::Helpers::XToPlus');
     $self->plugin('Randomizer::Helpers::Logger');
-    $self->plugin('Randomizer::Helpers::Splitter');
+    $self->plugin('Randomizer::Helpers::Generator');
+    $self->plugin('Randomizer::Helpers::FileCheck');
 
     $self->mode('development');
     $self->plugin('database', {
@@ -95,18 +95,11 @@ sub startup {
     $r->any('/logout')->to('default#logout');
     $r->any('/')->to('default#auth');
     #randomizer
-    $r->get('/welcome')->to('loto1#loto1');
-    $r->get('/loto1')->to('loto1#loto1');
-    $r->post('/loto1')->to('loto1#generate');
-    #randomizer2
-    $r->get('/loto2')->to('loto2#loto2');
-    $r->post('/loto2/upload')->to('loto2#generate2');
-    #randomizer3
-    $r->get('/loto3')->to('loto3#loto3');
-    $r->post('/loto3/upload')->to('loto3#generate3');
-    #vending
-    $r->get('/loto4')->to('loto4#main');
-    $r->post('/loto4')->to('loto4#generate');
+    $r->get('/welcome')->to('tickets#main');
+
+    $r->get('/tickets')->to('tickets#main');
+    $r->get('/tickets/config')->to('tickets#send_config');
+    $r->post('/tickets/create')->to('tickets#create');
     #bases
     $r->get('/bases')->to('bases#main');
     $r->post('/bases')->to('bases#upload');

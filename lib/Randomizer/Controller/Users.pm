@@ -14,15 +14,6 @@ sub list {
         $self->stash(users => $self->app->users->list() );
         $self->render( template => 'users/view' );
     }
-
-    #$self->render(text => '123');
-    #$self->render( json => $self->app->users->list() );
-    # $self->render(json =>
-    #               $self->app->users->list({pattern => $self->param('matching'),
-    #                                        start => $self->param('start') // 0,
-    #                                        count => $self->param('count') // 10}
-    #                                      )
-    #              );
 }
 
 sub add {
@@ -46,7 +37,6 @@ sub add {
 
         $self->flash( message => 'Пользователь уже существует' ) if !$id;
 
-        #$self->render( text => $id );
         $self->redirect_to('/users');
     }
 }

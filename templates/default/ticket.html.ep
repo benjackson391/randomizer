@@ -1,0 +1,140 @@
+% layout 'dashboard';
+<style>
+    .hidediv, .checkfile, .win2, .preview, .add_field {
+        display: none;
+    }
+    .customborder {
+        border: 1px solid #7f8c8d;
+        border-radius: 2px;
+        padding: 10px;
+        background: #ecf0f1;
+    }
+    .clear {
+        padding: 5px;
+    }
+</style>
+
+<div class="container">
+    <% if (my $message = flash 'message' ) { %>
+    <b><%= $message %></b>
+        <% } %>
+    <br>
+
+    <form method="post" action="/tickets/create" enctype="multipart/form-data" accept-charset="utf8">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-8 customborder">
+                <div class="form-group">
+                    <label>Тип билета</label>
+                    % foreach (sort {$a <=> $b} keys %$config) {
+                    <div class="radio">
+                        <label><input type="radio" name="ticket_type" value="<%= $_ %>"><%= $config->{$_}->{name} %></label>
+                                            </div>
+                    % }
+                </div>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+        <div class="clear"></div>
+
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-8 customborder win2">
+                <div class="form-group">
+                    % foreach (sort keys %$config) {
+                    <div class="loto_type hidediv <%= $_ %>">
+                                                    <label>Тип Лотереи</label>
+                    % my $include = $config->{$_}->{include};
+                        % foreach (sort keys $include) {
+                        <div class="radio">
+                            <label><input type="radio" name="loto_type" value="<%= $_ %>"><%= $include->{$_}->{name} %></label>
+                        </div>
+                        % }
+                    </div>
+                    % }
+                </div>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+        <div class="clear"></div>
+
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-8 customborder checkfile">
+                <div class="form-group add_field count hidediv">
+                    <label for="count">Количество</label>
+                    <input type="text" class="form-control" name="count">
+                </div>
+                <div class="form-group add_field date hidediv">
+                    <label for="order_number">Дата</label>
+                    <input type="text" class="form-control" name="date">
+                </div>
+                <div class="form-group add_field upload_file hidediv">
+                    <label for="upload_file">Файл</label>
+                    <input type="file" class="form-control" name="upload_file">
+                </div>
+                <div class="form-group">
+                    <label for="order_number">Номер заказа</label>
+                    <input type="text" class="form-control" id="order_number" name="order_number" placeholder="..." required>
+                </div>
+                <div class="form-group">
+                    <label for="draw">Номер тиража</label>
+                    <input type="text" class="form-control" id="draw" name="draw" placeholder="..." required>
+                </div>
+                <button id="submit" type="submit" class="btn btn-primary">Применить</button>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+var json = (function () {
+    var json = null;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': '/tickets/config',
+        'dataType': "json",
+        'success': function (data) {
+            json = data;
+        }
+    });
+    return json;
+})();
+
+console.log(json);
+
+$('input[name=ticket_type]').click(function() {
+    var v = $(this).val();
+    $('div.loto_type').hide();
+    $('input[name="loto_type"]').prop('checked', false);
+    $('div.add_field').hide();
+    $('div.add_field').find('input').prop('required',false);
+    $('div.ticket_type'+v).show();
+    $('div.ticket_type'+v).find('input').prop('required',false);
+    $('div.loto_type.'+v).show();
+    $('div.win2').show();
+
+    $('div.add_field').find('input').val('');
+    $('div.add_field').hide();
+    $.each( json[v].add_fields , function( index, value ) {
+        $('div.add_field.' + value).show();
+    });
+});
+
+$('input[name=loto_type]').click(function() {
+    $('div.checkfile').show();
+});
+
+$('input[name^="ticket"]').click(function() {
+    var v1 = $('input[name="ticket_type"]:checked').parent().text();
+        v2 = $('input[name="loto_type"]:checked').parent().text();
+    $('div.preview').text(v1 + ' : ' + v2);
+});
+
+// $('div.checkfile').find('input').change(function() {
+//     console.log( $(this).val() );
+// });
+</script>

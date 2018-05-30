@@ -6,6 +6,7 @@
                 <thead>
                 <tr>
                     <th>Тип</th>
+                    <th>Лотерея</th>
                     <th>Заказ</th>
                     <th>Логин</th>
                     <th>Дата</th>
@@ -14,6 +15,7 @@
                 <tbody>
                 <% foreach (sort {$a <=> $b} keys %$files) {%>
                 <tr>
+                    <td><%= $files->{$_}->{t_name} %></td>
                     <td><%= $files->{$_}->{name} %></td>
                     <td><a href="download/<%= $files->{$_}->{dir64} %>"><%= $files->{$_}->{order} %></a></td>
                     <td><%= $files->{$_}->{login} %></td>
@@ -30,8 +32,23 @@
 
 
 <script>
+    function format_date(date) {
+        month=date.getMonth();
+        month=month+1; //javascript date goes from 0 to 11
+        if (month<10) month="0"+month; //adding the prefix
+
+
+        year=date.getFullYear();
+        date.getDate() < 10 ? day='0'+date.getDate() : day=date.getDate();
+        date.getHours() < 10 ? hour='0'+date.getHours() : hour=date.getHours();
+        date.getMinutes() < 10 ? minutes='0'+date.getMinutes() : minutes=date.getMinutes();
+        date.getSeconds() < 10 ? seconds='0'+date.getSeconds() : seconds=date.getSeconds();
+
+
+        return day+":"+month+":"+year+" "+hour+":"+minutes+":"+seconds;
+    }
     $.each($('td.dl'), function( ) {
         var d = new Date($(this).text() * 1000);
-        $(this).text(d);
+        $(this).text( format_date(d));
     });
 </script>
