@@ -118,7 +118,6 @@ sub create {
 
         $self->logger("$dir :: $t_cnf->{name} :: $l_cnf->{name} :: $param{order_number}");
         if ($l_cnf->{regex_for_sn}) {
-            $log->debug("126");
             my $file_check = $self->file_check({
                 dir          => $dir,
                 name         => $param{name},
