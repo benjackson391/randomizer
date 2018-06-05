@@ -19,6 +19,7 @@ sub register {
             #$self->app->log->debug( Dumper(\%param) );
 
             tie (my @fn,"Tie::File" ,$param{dir} . '/'. $param{name} ) or die $!;
+            untie @fn;
             my $i;
             for (@fn) {
                 if ($param{sort}) {
@@ -33,8 +34,7 @@ sub register {
                 }
                 $i++;
             }
-            untie @fn;
-
+            
             #open FILE, '<', "$param{dir}/$param{name}"; # or die "can't open file";
             #my $i;
 #            while (<FILE>) {

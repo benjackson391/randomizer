@@ -43,10 +43,12 @@ sub create {
     my (%param, $fileuploaded);
     my $log = $self->app->log;
 
-    $param{order_number}    = $self->param("order_number");
-    $param{ticket_type}     = $self->param("ticket_type");
-    $param{loto_type}       = $self->param("loto_type");
-    $param{draw}            = $self->param("draw");
+    map { $param{$_} = $self->param($_) } qw/expansion order_number ticket_type loto_type draw/;
+
+#    $param{order_number}    = $self->param("order_number");
+#    $param{ticket_type}     = $self->param("ticket_type");
+#    $param{loto_type}       = $self->param("loto_type");
+#    $param{draw}            = $self->param("draw");
 
     my $t_cnf = $self->app->config('ticket')->{$param{ticket_type}};
     my $l_cnf = $t_cnf->{include}->{$param{loto_type}};
@@ -69,6 +71,7 @@ sub create {
             Count       => $param{count},
             OrderNumber => $param{order_number},
             Draw        => $param{draw},
+            expansion   => $param{expansion},
         });
         if ($generator) {
 
@@ -91,7 +94,7 @@ sub create {
                 });
                 if ($check_file) {
 
-                    my @files = File::Find::Rule->file()->name( '*.csv' )->in( $generator->{dir} );
+                    my @files = File::Find::Rule->file()->name( '*.csv',  '*.txt' )->in( $generator->{dir} );
                     my $obj = Archive::Zip->new();
                     map { $obj->addFile($_, basename($_)) } @files;
                     if ($obj->writeToFileNamed("$generator->{dir}/$param{order_number}.zip") == AZ_OK) {
@@ -111,7 +114,8 @@ sub create {
         chomp($dir);
         mkdir $dir, 0755;
         $log->debug("Name before: $param{name}");
-        $param{name} =~ s/(\w+)\.(\w+)/$1.csv/;
+        #$param{name} =~ s/(\w+)\.(\w+)/$1.csv/;
+        $param{name} =~ s/(?<name>\w+)(\.)?(?<exp>(?:\w+)?)/$1.$param{expansion}/;
         $log->debug("Name after: $param{name}");
         $fileuploaded->move_to("$dir/$param{name}");
         copy("$dir/$param{name}", "$dir/$param{name}.dist");
@@ -154,13 +158,7 @@ sub create {
                         print FILE $_ ;
                     }
                 }
-                if ($l_cnf->{add_null_row}) {
-                    $self->add_null_row({
-                        name => "$dir/$param{name}",
-                        add_null => $l_cnf->{add_null},
-                        null_row => $l_cnf->{null_row},
-                    });
-                }
+
                 if ($l_cnf->{create_ckeckfile}) {
                     $self->create_ckeckfile({
                         name => $param{name},
@@ -173,6 +171,15 @@ sub create {
                         check3 => 1,
                     });
                 }
+
+                if ($l_cnf->{add_null_row}) {
+                    $self->add_null_row({
+                        name => "$dir/$param{name}",
+                        add_null => $l_cnf->{add_null},
+                        null_row => $l_cnf->{null_row},
+                    });
+                }
+
                 if ($l_cnf->{xtoplus}) {
                     $self->x_to_plus({
                         name => $param{name},
@@ -180,7 +187,7 @@ sub create {
                     });
                 }
 
-                my @files = File::Find::Rule->file()->name( '*.csv' )->in( $dir );
+                my @files = File::Find::Rule->file()->name( '*.csv', '*.txt' )->in( $dir );
                 my $obj = Archive::Zip->new();
                 foreach (@files) {
                     $obj->addFile($_, basename($_));

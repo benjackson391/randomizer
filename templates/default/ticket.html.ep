@@ -81,6 +81,15 @@
                     <label for="draw">Номер тиража</label>
                     <input type="text" class="form-control" id="draw" name="draw" placeholder="..." required>
                 </div>
+                <div class="form-group">
+                    <label for="">Расширение</label>
+                    <div class="radio">
+                      <label><input type="radio" name="expansion" value="txt" required>TXT</label>
+                    </div>
+                    <div class="radio">
+                      <label><input type="radio" name="expansion"  value="csv">CSV</label>
+                    </div>
+                </div>
                 <button id="submit" type="submit" class="btn btn-primary">Применить</button>
             </div>
             <div class="col-sm-3"></div>

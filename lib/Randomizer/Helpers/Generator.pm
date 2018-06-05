@@ -28,12 +28,13 @@ sub register {
             my $count       = $param->{Count};
             my $OrderNumber = $param->{OrderNumber};
             my $Draw        = $param->{Draw};
+            my $exp        = $param->{expansion};
 
             my $db_table_name = $self->config->{ticket}->{'1'}->{include}->{$type}->{name};
             my $dir = 'uploaded/' . b64_encode ($self->session('user') . " :: " .  time );
             chomp($dir);
             mkdir $dir, 0755;
-            my $name = "$OrderNumber-$db_table_name-$count.csv";
+            my $name = "$OrderNumber-$db_table_name-$count.$exp";
 
             $residue = $count;
 
