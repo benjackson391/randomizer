@@ -43,12 +43,7 @@ sub create {
     my (%param, $fileuploaded);
     my $log = $self->app->log;
 
-    map { $param{$_} = $self->param($_) } qw/expansion order_number ticket_type loto_type draw/;
-
-#    $param{order_number}    = $self->param("order_number");
-#    $param{ticket_type}     = $self->param("ticket_type");
-#    $param{loto_type}       = $self->param("loto_type");
-#    $param{draw}            = $self->param("draw");
+    map { $param{$_} = $self->param($_) } qw/expansion order_number ticket_type loto_type draw t_in_p p_in_b p_n/;
 
     my $t_cnf = $self->app->config('ticket')->{$param{ticket_type}};
     my $l_cnf = $t_cnf->{include}->{$param{loto_type}};
@@ -88,9 +83,9 @@ sub create {
                     regex_for_sn => $l_cnf->{regex_for_sn},
                     order_number => $param{order_number},
                     draw => $param{draw},
-                    check1 => 1,
-                    check2 => 1,
-                    check3 => 1,
+                    p_n => $param{p_n},
+                    p_in_b => $param{p_in_b},
+                    t_in_p => $param{t_in_p},
                 });
                 if ($check_file) {
 
@@ -166,9 +161,9 @@ sub create {
                         regex_for_sn => $l_cnf->{regex_for_sn},
                         order_number => $param{order_number},
                         draw => $param{draw},
-                        check1 => 1,
-                        check2 => 1,
-                        check3 => 1,
+                        p_n => $param{p_n},
+                        p_in_b => $param{p_in_b},
+                        t_in_p => $param{t_in_p},
                     });
                 }
 

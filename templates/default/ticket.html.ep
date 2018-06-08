@@ -82,6 +82,18 @@
                     <input type="text" class="form-control" id="draw" name="draw" placeholder="..." required>
                 </div>
                 <div class="form-group">
+                    <label for="p_n">Номер первой пачки</label>
+                    <input type="text" class="form-control" id="p_n" name="p_n" value='1' pattern="^\d+$" required>
+                </div>
+                <div class="form-group">
+                    <label for="p_in_b">Количество пачек в коробке</label>
+                    <input type="text" class="form-control" id="p_in_b" name="p_in_b" value='60' pattern="^\d+$" required>
+                </div>
+                <div class="form-group">
+                    <label for="t_in_p">Количество билетов в пачке</label>
+                    <input type="text" class="form-control" id="t_in_p" name="t_in_p" value='50' pattern="^\d+$" required>
+                </div>
+                <div class="form-group">
                     <label for="">Расширение</label>
                     <div class="radio">
                       <label><input type="radio" name="expansion" value="txt" required>TXT</label>

@@ -9,23 +9,28 @@ sub register {
         create_ckeckfile => sub {
             my ($self, $param) = @_;
 
-            #my $dir = $param->{dir};
-            #my $name = $param->{name};
-
             my %param = (
-                t_in_p => 50, #tickets_in_pack
-                p_in_b => 60, #packs_in_box
+                t_in_p => $param->{t_in_p}, #tickets_in_pack
+                p_in_b => $param->{p_in_b}, #packs_in_box
                 b_n    => 1,  #box_number
-                p_n    => 1,  #pack_number
+                p_n    => $param->{p_n},  #pack_number
                 l_n    => 1,  #line_number
             );
+#            my %param = (
+#                t_in_p => $param->{t_in_p} || 50, #tickets_in_pack
+#                p_in_b => $param->{p_in_b} || 60, #packs_in_box
+#                b_n    => 1,  #box_number
+#                p_n    => $param->{p_n} || 1,  #pack_number
+#                l_n    => 1,  #line_number
+#            );
 
+            $self->app->log->debug( Dumper(\$param) );
             tie (my @fn,"Tie::File" ,$param->{dir} . '/'. $param->{name} ) or die $!;
             $param{size} = @fn;
             $param{file} = [@fn];
             untie @fn;
 
-            my $count = int($param{size} / ($param{t_in_p} * $param{p_in_b}));
+            my $count = eval {int($param{size} / ($param{t_in_p} * $param{p_in_b}))};
             $count-- unless $param{size} % ($param{t_in_p} * $param{p_in_b});
 
             open(CHECKLIST, ">>", $param->{dir} . '/check_list.csv') or die "Could not open 'check_list' $!\n";
@@ -48,6 +53,7 @@ sub register {
                 print CHECKLIST "$row\n";
                 $param{b_n}++;
                 $param{p_n} += $param{p_in_b};
+                $self->app->log->debug( $row );
             }
 
             close CHECKLIST;
