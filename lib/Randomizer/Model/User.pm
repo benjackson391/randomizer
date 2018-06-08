@@ -26,9 +26,18 @@ package Randomizer::Model::User v0.0.1 {
     }
 
     sub set_user {
-#        UPDATE table_name
-#            SET column1 = value1, column2 = value2, ...
-#                WHERE condition;
+        my ($self, $param) = @_;
+
+        my $sql = ("UPDATE users SET");
+        for (qw/first_name last_name login password/) {
+            $sql .= " $_ = '$param->{$_}'," if $param->{$_};
+        }
+        $sql .= " valid_id = '$param->{valid_id}' WHERE id = $param->{id}";
+
+        my $sth = $self->db->prepare($sql);
+        $sth->execute();
+
+        return $sql;
     }
 
     sub get_user_group {

@@ -15,24 +15,12 @@ sub index {
 
         for my $user (keys %$users) {
             my $included_groups = $self->app->users->get_user_group($user);
-            #$self->app->log->debug( '---' . Dumper($included_groups));
 
             for my $group (keys %$groups) {
                 $users->{$user}->{groups}->{$group}->{name} = $groups->{$group}->{name};
                 $users->{$user}->{groups}->{$group}->{valid} = $included_groups->{$group} || 0;
-
-                #$self->app->log->debug( '---' . Dumper($groups->{$group}));
-                #$users->{$user}->{groups}->{$group}->{id} = $group->{id};
-                #$users->{$user}->{groups}->{$group}->{name} = $group->{name};
-                #$users->{$user}->{groups}->{$group}->{valid} = 0;
-                #$users->{$user}->{groups}->{$group} = 0;
-                #if (exists $included_groups->{$group}) {
-                #    $users->{$user}->{groups}->{$group}->{valid} = 1;
-                #}
             }
         }
-
-        $self->app->log->debug( '---' . Dumper($users));
 
         if ($self->param('user_id')) {
 
@@ -53,21 +41,31 @@ sub update {
         return;
     } else {
         my %param;
-        for (qw/id first_name last_name login admin create download valid_id/) {
+        for (qw/id first_name last_name login /) {
             $param{$_} = $self->param($_);
         }
+
+        if ($self->param('valid_id')) {
+            $param{valid_id} = 1;
+        } else {
+            $param{valid_id} = 0;
+        }
+        $param{password} = $self->bcrypt( $self->param('password') ) if $self->param('password');
+
         my $groups = $self->app->groups->get_groups;
         for (keys $groups) {
             $param{groups}->{$groups->{$_}->{name}} = $self->param($groups->{$_}->{name});
         }
 
+        $self->app->log->debug($self->app->users->set_user(\%param));
+
         $self->app->users->set_user_group({
             user_id    => $param{id},
             groups     => $param{groups},
         });
+
         $self->stash( msg => 'Пользователь обновлен!');
         $self->redirect_to('/users');
-        #$self->render( text => Dumper(\%param));
     }
 }
 

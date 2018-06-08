@@ -22,7 +22,7 @@ sub main {
         if ($self->param("dir")) {
             if ($self->param("file")) {
                 my $file = b64_decode($self->param("file"));
-                $l->debug('--- ' . $file);
+
                 my @file = File::Find::Rule->file()
                     ->name( $file )
                     ->in( "uploaded/" . $self->param("dir") );
@@ -63,8 +63,7 @@ sub main {
                 $items{$.}{archive} = 1 if -f "uploaded/$line[4]/" . $items{$.}{order} . ".zip";
             }
             close LOG;
-            $l->debug('--- ' . Dumper( \%items ) );
-            #$self->app->log->debug( '---' . Dumper( \%items));
+
             $self->stash( files => \%items );
             $self->render( template => 'default/download' );
         }

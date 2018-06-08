@@ -22,7 +22,7 @@ sub register {
 
             if (! $param->{null_row}) {
                 my @arr = split ';', $first_line;
-                $param->{null_row} = '.;' x @arr;
+                $param->{null_row} = '0;' x @arr;
             }
 
             my $residue = $lines % $param->{add_null};

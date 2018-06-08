@@ -5,8 +5,9 @@ use Mojo::Base 'Mojolicious';
 use Mojolicious::Plugin::Authentication;
 use Mojolicious::Plugin::Bcrypt;
 use Mojolicious::Plugin::Database;
-use DBI;
+use Data::Dumper;
 use utf8;
+use DBI;
 
 use Randomizer::Model::User;
 use Randomizer::Model::Group;
