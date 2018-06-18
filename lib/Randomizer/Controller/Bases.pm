@@ -14,12 +14,6 @@ use Encode::Detect::Detector;
 # This action will render a template
 sub main {
     my $self = shift;
-    if ( not $self->user_exists ) {
-        $self->flash( message => 'You must log in to view this page' );
-        $self->redirect_to('/');
-        return;
-    }
-    else {
         opendir(my $dh, "bases");
         my @files = readdir($dh);
 
@@ -29,14 +23,10 @@ sub main {
         $self->app->log->debug(Dumper(\%files));
         $self->stash( files => \%files );
         $self->render( template => 'default/bases' );
-    }
 }
 
 sub upload {
     my $self = shift;
-    if ( not $self->user_exists ) {
-        }
-        else {
             return $self->render(text => 'File is too big.', status => 200)
                 if $self->req->is_limit_exceeded;
             return $self->redirect_to('/bases')
@@ -51,7 +41,6 @@ sub upload {
 
             $fileuploaded->move_to('bases/' . b64_encode ( time . " :: $name" ) );
             $self->redirect_to('/bases');
-    }
 }
 
 1;

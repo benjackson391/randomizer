@@ -13,7 +13,7 @@ use Randomizer::Model::User;
 use Randomizer::Model::Group;
 
 sub startup {
-	my $self = shift;
+    my $self = shift;
 
     $self->plugin('Config');
     $self->renderer->encoding('utf8');
@@ -86,40 +86,64 @@ sub startup {
         state $group = Randomizer::Model::Group->new(db => shift->db);
     });
 
-	my $r = $self->routes;
+### Routing
 
-	$r->add_condition(
-			isUser => sub {
-				my ($route, $c, $captures, $pattern) = @_;
+    my $r = $self->routes;
 
-				return 1 if $c->isAdmin($c->session->{'user_id'});
-				return undef;
-			}
-		);
+    $r->any('/' => sub {
+        my $c = shift;
 
-    $r->any('/logout')->to('default#logout');
-    $r->any('/')->to('default#auth');
-    #randomizer
-    $r->get('/welcome')->to('tickets#main');
+        $c->redirect_to($c->config->{main_page}) if $c->session('user');
 
-    $r->get('/tickets')->to('tickets#main');
-    $r->get('/tickets/config')->to('tickets#send_config');
-    $r->post('/tickets/create')->to('tickets#create');
-    #bases
-    $r->get('/bases')->to('bases#main');
-    $r->post('/bases')->to('bases#upload');
-    #logs
-    $r->get('/logs')->to('logs#main');
-    #users
-    $r->get('/users')->to('users#index');
-    $r->get('/users/<:user_id>')->to('users#index');
-    $r->post('/users/')->to('users#update');
+        my $method = $c->tx->req->method;
 
-    $r->get('/download')->to('download#main');
-    $r->get('/download/<:dir>')->to('download#main');
-    $r->get('/download/<:dir>/<:file>')->to('download#main');
+        if ($method eq 'GET') {
+            $c->render( template => 'default/login' );
+        } else {
+            my $user = $c->param('name') || q{};
+            my $pass = $c->param('pass') || q{};
+            if ( $c->authenticate( $user, $pass ) ) {
+                $c->session(user => $user);
+                $c->redirect_to($c->config->{main_page});
+            }
+            else {
+                $c->flash( message => 'Invalid credentials! ' );
+                $c->redirect_to('/');
+            }
+        }
+    });
 
-    $r->any('/login')->to('default#login');
+    $r->get('/logout' => sub {
+        my $c = shift;
+        $c->session(expires => 1);
+        $c->redirect_to('/');
+    });
+
+    my $logged_in = $r->under( sub {
+        my $c = shift;
+        return 1 if $c->session('user');
+        $c->redirect_to('/');
+        return undef;
+    } );
+
+    $logged_in->get('/tickets')->to('tickets#main');
+    $logged_in->get('/tickets/config')->to('tickets#send_config');
+    $logged_in->post('/tickets/create')->to('tickets#create');
+#    #bases
+    $logged_in->get('/bases')->to('bases#main');
+    $logged_in->post('/bases')->to('bases#upload');
+#    #logs
+    $logged_in->get('/logs')->to('logs#main');
+#    #users
+    $logged_in->get('/users')->to('users#index');
+    $logged_in->get('/users/<:user_id>')->to('users#index');
+    $logged_in->post('/users/')->to('users#update');
+#
+    $logged_in->get('/download')->to('download#main');
+    $logged_in->get('/download/<:dir>')->to('download#main');
+    $logged_in->get('/download/<:dir>/<:file>')->to('download#main');
+#
+    $logged_in->any('/login')->to('default#login');
 }
 
 1;

@@ -7,12 +7,6 @@ use utf8;
 
 sub main {
     my $self = shift;
-    if ( not $self->user_exists ) {
-        $self->flash( message => 'You must log in to view this page' );
-        $self->redirect_to('/');
-        return;
-    }
-    else {
         $self->app->log->debug("log main");
         my %logs;
         my $line = 1;
@@ -24,7 +18,6 @@ sub main {
         close $fn;
 
         $self->render( template => 'default/logs', logs => \%logs );
-    }
 }
 
 1;

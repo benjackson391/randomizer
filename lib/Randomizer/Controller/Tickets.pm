@@ -13,16 +13,9 @@ use utf8;
 
 sub main {
     my $self = shift;
-    if ( not $self->user_exists ) {
-        $self->flash( message => 'You must log in to view this page' );
-        $self->redirect_to('/');
-        return;
-    }
-    else {
         my $cnf = $self->app->config('ticket');
 
         $self->render( template => 'default/ticket', config => $cnf );
-    }
 }
 
 sub send_config {

@@ -40,8 +40,15 @@ package Randomizer::Model::User v0.0.1 {
         return $sql;
     }
 
+=head get_user_group()
+    my $user_group = $self->get_user_group(
+    1, # user_id
+    1  # optional - return array;
+    )
+=cut
+
     sub get_user_group {
-        my ($self, $user) = @_;
+        my ($self, $user_id, $array) = @_;
 
         my $sql = ("select
                       groups.id
@@ -50,10 +57,15 @@ package Randomizer::Model::User v0.0.1 {
                     where user_group.user_id = ?");
 
         my $sth = $self->db->prepare($sql);
-        $sth->execute($user);
-        my %groups = map { $_->[0] => 1 } @{ $sth->fetchall_arrayref };
+        $sth->execute($user_id);
 
-        return \%groups;
+        if ($array) {
+            my @groups = map { $_->[0] } @{ $sth->fetchall_arrayref };
+            return \@groups;
+        } else {
+            my %groups = map { $_->[0] => 1 } @{ $sth->fetchall_arrayref };
+            return \%groups;
+        }
     }
 
 

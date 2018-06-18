@@ -1,7 +1,7 @@
 % layout 'default';
 % title 'Login';
 <div class="wrapper">
-  <form class="form-signin" action='/login' method='post'>
+  <form class="form-signin" action='/' method='post'>
     <h2 class="form-signin-heading">
     <% if (my $message = flash 'message' ) { %>
         <b><%= $message %></b><br>

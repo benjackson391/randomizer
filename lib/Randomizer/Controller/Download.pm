@@ -12,12 +12,6 @@ use utf8;
 
 sub main {
     my $self = shift;
-    if ( not $self->user_exists ) {
-        $self->flash( message => 'You must log in to view this page' );
-        $self->redirect_to('/');
-        return;
-    }
-    else {
         my $l = $self->app->log;
         if ($self->param("dir")) {
             if ($self->param("file")) {
@@ -67,8 +61,6 @@ sub main {
             $self->stash( files => \%items );
             $self->render( template => 'default/download' );
         }
-
-    }
 }
 
 1;

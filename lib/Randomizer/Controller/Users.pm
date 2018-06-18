@@ -5,20 +5,15 @@ use Mojo::JSON;
 
 sub index {
     my $self = shift;
-    if ( not $self->user_exists ) {
-        $self->flash( message => 'You must log in to view this page' );
-        $self->redirect_to('/');
-        return;
-    } else {
         my $groups = $self->app->groups->get_groups;
         my $users = $self->app->users->get_users;
 
-        for my $user (keys %$users) {
-            my $included_groups = $self->app->users->get_user_group($user);
+        for my $user_id (keys %$users) {
+            my $included_groups = $self->app->users->get_user_group($user_id);
 
             for my $group (keys %$groups) {
-                $users->{$user}->{groups}->{$group}->{name} = $groups->{$group}->{name};
-                $users->{$user}->{groups}->{$group}->{valid} = $included_groups->{$group} || 0;
+                $users->{$user_id}->{groups}->{$group}->{name} = $groups->{$group}->{name};
+                $users->{$user_id}->{groups}->{$group}->{valid} = $included_groups->{$group} || 0;
             }
         }
 
@@ -30,16 +25,10 @@ sub index {
             $self->render( users => $users);
             $self->render( template => 'users/list');
         }
-    }
 }
 
 sub update {
     my $self = shift;
-    if ( not $self->user_exists ) {
-        $self->flash( message => 'You must log in to view this page' );
-        $self->redirect_to('/');
-        return;
-    } else {
         my %param;
         for (qw/id first_name last_name login /) {
             $param{$_} = $self->param($_);
@@ -66,7 +55,6 @@ sub update {
 
         $self->stash( msg => 'Пользователь обновлен!');
         $self->redirect_to('/users');
-    }
 }
 
 
