@@ -36,7 +36,7 @@ sub create {
     my (%param, $fileuploaded);
     my $log = $self->app->log;
 
-    map { $param{$_} = $self->param($_) } qw/expansion order_number ticket_type loto_type draw t_in_p p_in_b p_n/;
+    map { $param{$_} = $self->param($_) } qw/expansion order_number ticket_type loto_type draw t_in_p p_in_b p_n add_null/;
 
     my $t_cnf = $self->app->config('ticket')->{$param{ticket_type}};
     my $l_cnf = $t_cnf->{include}->{$param{loto_type}};
@@ -67,7 +67,7 @@ sub create {
 
             my $add_null_row = $self->add_null_row({
                 name     => "$generator->{dir}/$generator->{name}",
-                add_null => 3000,
+                add_null => $param{add_null},
             });
             if ($add_null_row) {
                 my $check_file = $self->create_ckeckfile({
@@ -163,8 +163,7 @@ sub create {
                 if ($l_cnf->{add_null_row}) {
                     $self->add_null_row({
                         name => "$dir/$param{name}",
-                        add_null => $l_cnf->{add_null},
-                        null_row => $l_cnf->{null_row},
+                        add_null => $param{add_null},
                     });
                 }
 

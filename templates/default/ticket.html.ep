@@ -74,6 +74,10 @@
                     <input type="file" class="form-control" name="upload_file">
                 </div>
                 <div class="form-group">
+                    <label for="add_null">Добавить пустые строки (Кратное значение)</label>
+                    <input type="text" class="form-control" name="add_null" value='3000' placeholder="..." required>
+                </div>
+                <div class="form-group">
                     <label for="order_number">Номер заказа</label>
                     <input type="text" class="form-control" id="order_number" name="order_number" placeholder="..." required>
                 </div>
@@ -125,7 +129,7 @@ var json = (function () {
     return json;
 })();
 
-console.log(json);
+
 
 $('input[name=ticket_type]').click(function() {
     var v = $(this).val();
@@ -146,10 +150,12 @@ $('input[name=ticket_type]').click(function() {
 });
 
 $('input[name=loto_type]').click(function() {
+    //$("input[name=add_null]").val(3000);
     $('div.checkfile').show();
 });
 
 $('input[name^="ticket"]').click(function() {
+
     var v1 = $('input[name="ticket_type"]:checked').parent().text();
         v2 = $('input[name="loto_type"]:checked').parent().text();
     $('div.preview').text(v1 + ' : ' + v2);
