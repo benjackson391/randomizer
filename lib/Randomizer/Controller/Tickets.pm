@@ -101,10 +101,8 @@ sub create {
         my $dir = 'uploaded/' . b64_encode ($self->session('user') . " :: " .  time );
         chomp($dir);
         mkdir $dir, 0755;
-        $log->debug("Name before: $param{name}");
-        #$param{name} =~ s/(\w+)\.(\w+)/$1.csv/;
-        $param{name} =~ s/(?<name>\w+)(\.)?(?<exp>(?:\w+)?)/$1.$param{expansion}/;
-        $log->debug("Name after: $param{name}");
+        $param{name} =~ s/(.+)\.\w+$/$1.$param{expansion}/;
+
         $fileuploaded->move_to("$dir/$param{name}");
         copy("$dir/$param{name}", "$dir/$param{name}.dist");
 

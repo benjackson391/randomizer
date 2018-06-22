@@ -121,7 +121,25 @@ sub startup {
 
     my $logged_in = $r->under( sub {
         my $c = shift;
-        return 1 if $c->session('user');
+
+        my $access = {
+            1 => 'users', #admin
+            2 => 'download', #download
+            3 => 'tickets', #create
+            4 => 'reprint', #create
+        };
+
+        if ( $c->session('user') ) {
+            my $path = $c->tx->req->url->path;
+            my $groups = $c->app->users->get_user_group(${ $c->current_user }{id}, 1);
+
+            for (@$groups) {
+                #$c->app->log->debug( @$groups );
+                #$c->app->log->debug( "access OK for user ${ $c->current_user }{login} to $path" ) if $path =~ /$access->{$_}/;
+                return 1 if $path =~ /$access->{$_}/;
+            }
+        }
+
         $c->redirect_to('/');
         return undef;
     } );
@@ -142,8 +160,10 @@ sub startup {
     $logged_in->get('/download')->to('download#main');
     $logged_in->get('/download/<:dir>')->to('download#main');
     $logged_in->get('/download/<:dir>/<:file>')->to('download#main');
-#
-    $logged_in->any('/login')->to('default#login');
+
+    $logged_in->get('/reprint')->to('reprint#index');
+    $logged_in->get('/reprint/<:dir>')->to('reprint#index');
+
 }
 
 1;

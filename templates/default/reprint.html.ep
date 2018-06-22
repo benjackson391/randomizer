@@ -1,0 +1,166 @@
+% layout 'dashboard';
+<style>
+    button {
+    width: 100px;
+    }
+		.error{
+			display: none;
+			margin-left: 10px;
+		}
+
+		.error_show{
+			color: red;
+			margin-left: 10px;
+		}
+    .reprint_row {
+      display: inline-block;
+      width: 381px;
+    }
+    .reprint_cont {
+       /*//border-bottom: 1px solid #e9ecef;*/
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Тип</th>
+                    <th>Лотерея</th>
+                    <th>Заказ</th>
+                    <th>Логин</th>
+                    <th>Дата</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% foreach (sort {$a <=> $b} keys %$files) {%>
+                <tr>
+                    <td><%= $files->{$_}->{t_name} %></td>
+                    <td><%= $files->{$_}->{name} %></td>
+                    <td>
+                        <button id='modal' type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" link="<%= $files->{$_}->{dir64} %>">
+                            <%= $files->{$_}->{order} %>
+                        </button>
+                    <td><%= $files->{$_}->{login} %></td>
+                    <td class="dl"><%= $files->{$_}->{date} %></td>
+                </tr>
+
+                <% } %>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+      <!-- The Modal -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Строки для перепечатки</h4>
+                    <button type="button" class="close" onclick="ClearForm()" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                     <label for="int">Значение</label>
+                      <input id='int' type='text' class="form-control">
+                      <button type="button" class="btn btn-primary" id='add'>Добавить</button>
+                      <span id='error' class="error">Указывайте номер(100) иди диапазон(100-200)</span>
+                    </div>
+                    <div class='int_container'>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="SendToReprint()">Создать</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var reprint = {link:"", rows:""};
+
+    $('button#modal').click(function () {
+        reprint.link = $(this).attr('link');
+    });
+
+    $('button#add').click(function() {
+        var str = $(this).parent().find('input').val();
+        var res = str.match(/^\d+(?:-\d+)?$/);
+        var span=$(this).parent().find('span#error');
+        if (res) {
+            span.removeClass('error_show');
+            span.addClass('error');
+            if (dublicater(str)) {
+                $('div.int_container').append(
+                    $('<div>', {class: "reprint_cont"}).append(
+                        $('<span>', {class: "reprint_row", text: str})).append(
+                            $('<button>', {
+                            type: 'button',
+                            class:'btn btn-danger remove',
+                            text: 'Удалить',
+                            //id: 'remove',
+                    }))
+                );
+            }
+        } else {
+           //var span=$(this).parent().find('span.error');
+            span.removeClass('error');
+            span.addClass('error_show');
+        }
+    });
+
+    $('#myModal').on( 'click', 'button.remove', function() {
+        $(this).parent().remove();
+    });
+
+    function dublicater(value) {
+        var tumblr = true;
+        $('span.reprint_row').each(function() {
+            if (value === $(this).text()) { tumblr = false; }
+        });
+        return tumblr;
+    }
+
+    function SendToReprint() {
+        var $i = 0;
+        $('span.reprint_row').each(function() {
+            reprint.rows = reprint.rows + $(this).text() + ';';
+        });
+        ClearForm();
+        if ($i) {
+            window.location.href = "./reprint/" + reprint.link + '--' + reprint.rows;
+        }
+    }
+
+    function ClearForm() {
+        $('div.int_container').html("");
+        $('input#int').val('');
+    }
+
+    function format_date(date) {
+        month=date.getMonth();
+        month=month+1; //javascript date goes from 0 to 11
+        if (month<10) month="0"+month; //adding the prefix
+
+
+        year=date.getFullYear();
+        date.getDate() < 10 ? day='0'+date.getDate() : day=date.getDate();
+        date.getHours() < 10 ? hour='0'+date.getHours() : hour=date.getHours();
+        date.getMinutes() < 10 ? minutes='0'+date.getMinutes() : minutes=date.getMinutes();
+        date.getSeconds() < 10 ? seconds='0'+date.getSeconds() : seconds=date.getSeconds();
+
+
+        return day+":"+month+":"+year+" "+hour+":"+minutes+":"+seconds;
+    }
+    $.each($('td.dl'), function( ) {
+        var d = new Date($(this).text() * 1000);
+        $(this).text( format_date(d));
+    });
+</script>
