@@ -8,6 +8,7 @@ use File::Basename;
 use Mojo::Upload;
 use Data::Dumper;
 use File::Copy;
+use Tie::File;
 use JSON;
 use utf8;
 
@@ -142,6 +143,23 @@ sub create {
                     open FILE, '>', "$dir/$param{name}";
                     foreach (@rows) {
                         print FILE $_ ;
+                    }
+                }
+
+                if ($l_cnf->{add_date_simple}) {
+                    $self->app->log->debug('start ' . $param{date});
+                    my @rows;
+                    open FILE, '<:utf8', "$dir/$param{name}";
+                    while (<FILE>) {
+                        my $line = $_;
+                        chop $line;
+                        chop $line;
+                        $line .= ';' if /^.*[^;]$/;
+                        push @rows, "$line$param{date}";
+                    }
+                    open my $fn, '>', "$dir/$param{name}";
+                    foreach (@rows) {
+                        print $fn "$_\n";
                     }
                 }
 

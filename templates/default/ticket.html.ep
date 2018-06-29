@@ -161,6 +161,14 @@ $('input[name^="ticket"]').click(function() {
     $('div.preview').text(v1 + ' : ' + v2);
 });
 
+$('input[name=loto_type]').click(function() {
+    if ( $(this).val() > 4 ) {
+        $('input[name=date]').val('');
+        $('input[name=date]').attr('disabled', true);
+    } else {
+        $('input[name=date]').attr('disabled', false);
+    }
+});
 // $('div.checkfile').find('input').change(function() {
 //     console.log( $(this).val() );
 // });

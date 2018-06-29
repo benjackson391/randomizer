@@ -129,14 +129,17 @@
     }
 
     function SendToReprint() {
-        var $i = 0;
+        console.log('test');
+        var i = 1;
         $('span.reprint_row').each(function() {
             reprint.rows = reprint.rows + $(this).text() + ';';
         });
-        ClearForm();
-        if ($i) {
+        console.log('test  ', i);
+        if (i) {
             window.location.href = "./reprint/" + reprint.link + '--' + reprint.rows;
         }
+
+        ClearForm();
     }
 
     function ClearForm() {
