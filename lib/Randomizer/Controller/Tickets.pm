@@ -99,16 +99,25 @@ sub create {
         }
     }
     else {
+        $log->debug("Ticket type = " . $param{ticket_type});
         my $dir = 'uploaded/' . b64_encode ($self->session('user') . " :: " .  time );
         chomp($dir);
         mkdir $dir, 0755;
-        $param{name} =~ s/(.+)\.\w+$/$1.$param{expansion}/;
-
+        #$param{name} =~ s/(.+)\.\w+$/$1.$param{expansion}/;
+        ###
+        if ( $param{name} =~ /(.*)\.(.*)/) {
+            $param{name} = "$1.$param{expansion}";
+        } else {
+            $param{name} .= ".$param{expansion}";
+        }
+        ###
+        $log->debug("File name - " . $param{name});
         $fileuploaded->move_to("$dir/$param{name}");
         copy("$dir/$param{name}", "$dir/$param{name}.dist");
 
         $self->logger("$dir :: $t_cnf->{name} :: $l_cnf->{name} :: $param{order_number}");
         if ($l_cnf->{regex_for_sn}) {
+            $log->debug("Start: regex fo sn");
             my $file_check = $self->file_check({
                 dir          => $dir,
                 name         => $param{name},
@@ -116,16 +125,19 @@ sub create {
                 regex_for_sn => $l_cnf->{regex_for_sn},
             });
             if ($file_check->[0]) {
+                $log->debug("Start: regex fo sn - ok");
                 if ($l_cnf->{regexp_modify}) {
+                    $self->app->log->debug("Start: regex modify");
                     $self->regexp_modify({
                         name => $param{name},
                         dir => $dir,
                         regex => $l_cnf->{regex},
                         substition => $l_cnf->{substition},
                     });
-                    $log->debug('regexp modified');
+                    $log->debug("Start: regex modify - ok");
                 }
                 if ($l_cnf->{add_date}) {
+                    $log->debug("Start: add date");
                     my @rows;
                     open FILE, '<:utf8', "$dir/$param{name}";
                     my $i = 0;
@@ -144,26 +156,21 @@ sub create {
                     foreach (@rows) {
                         print FILE $_ ;
                     }
+                    $log->debug("Start: add date - ok");
                 }
 
                 if ($l_cnf->{add_date_simple}) {
-                    $self->app->log->debug('start ' . $param{date});
-                    my @rows;
-                    open FILE, '<:utf8', "$dir/$param{name}";
-                    while (<FILE>) {
-                        my $line = $_;
-                        chop $line;
-                        chop $line;
-                        $line .= ';' if /^.*[^;]$/;
-                        push @rows, "$line$param{date}";
-                    }
-                    open my $fn, '>', "$dir/$param{name}";
-                    foreach (@rows) {
-                        print $fn "$_\n";
-                    }
+                    $log->debug("Start: add date simple");
+                    $self->add_data_simple({
+                        name => $param{name},
+                        dir  => $dir,
+                        date => $param{date},
+                    });
+                    $log->debug("Start: add date simple - ok");
                 }
 
                 if ($l_cnf->{create_ckeckfile}) {
+                    $log->debug("Start: create checkfile");
                     $self->create_ckeckfile({
                         name => $param{name},
                         dir => $dir,
@@ -174,20 +181,25 @@ sub create {
                         p_in_b => $param{p_in_b},
                         t_in_p => $param{t_in_p},
                     });
+                    $log->debug("Start: create checkfile - ok");
                 }
 
                 if ($l_cnf->{add_null_row}) {
+                    $log->debug("Start: add null row");
                     $self->add_null_row({
                         name => "$dir/$param{name}",
                         add_null => $param{add_null},
                     });
+                    $log->debug("Start: add null row - ok");
                 }
 
                 if ($l_cnf->{xtoplus}) {
+                    $log->debug("Start: x to plus");
                     $self->x_to_plus({
                         name => $param{name},
                         dir => $dir,
                     });
+                    $log->debug("Start: x to plus - okQ");
                 }
 
                 my @files = File::Find::Rule->file()->name( '*.csv', '*.txt' )->in( $dir );

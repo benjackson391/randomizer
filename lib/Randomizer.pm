@@ -26,10 +26,14 @@ sub startup {
     $self->plugin('Randomizer::Helpers::AddNullRow');
     $self->plugin('Randomizer::Helpers::RegexpModify');
     $self->plugin('Randomizer::Helpers::CreateCheckFile');
+    $self->plugin('Randomizer::Helpers::CreateCheckFile2');
+    $self->plugin('Randomizer::Helpers::CreateCheckFile3');
     $self->plugin('Randomizer::Helpers::XToPlus');
     $self->plugin('Randomizer::Helpers::Logger');
     $self->plugin('Randomizer::Helpers::Generator');
     $self->plugin('Randomizer::Helpers::FileCheck');
+    $self->plugin('Randomizer::Helpers::AddDateSimple');
+    $self->plugin('Randomizer::Helpers::CreateBoxes');
 
     $self->mode('development');
     $self->plugin('database', {
@@ -127,18 +131,22 @@ sub startup {
             2 => 'download', #download
             3 => 'tickets', #create
             4 => 'reprint', #create
+            4 => 'boxes', #create
         };
 
         if ( $c->session('user') ) {
             my $path = $c->tx->req->url->path;
             my $groups = $c->app->users->get_user_group(${ $c->current_user }{id}, 1);
 
+            return 1 if $path eq 'boxes';
             for (@$groups) {
                 #$c->app->log->debug( @$groups );
                 #$c->app->log->debug( "access OK for user ${ $c->current_user }{login} to $path" ) if $path =~ /$access->{$_}/;
                 return 1 if $path =~ /$access->{$_}/;
             }
         }
+
+
 
         $c->redirect_to('/');
         return undef;
@@ -164,6 +172,8 @@ sub startup {
     $logged_in->get('/reprint')->to('reprint#index');
     $logged_in->get('/reprint/<:dir>')->to('reprint#index');
 
+    $logged_in->get('/boxes')->to('boxes#index');
+    $logged_in->post('/boxes')->to('boxes#create');
 }
 
 1;

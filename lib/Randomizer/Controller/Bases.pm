@@ -20,7 +20,7 @@ sub main {
         my %files = map { split( " :: ", b64_decode($_), 2 ) } @files;
         %files = map { Mojo::Date->new($_) => $files{$_} } keys %files;
 
-        $self->app->log->debug(Dumper(\%files));
+        #$self->app->log->debug(Dumper(\%files));
         $self->stash( files => \%files );
         $self->render( template => 'default/bases' );
 }
@@ -37,7 +37,7 @@ sub upload {
             my $size = $fileuploaded->size;
             my $slurp = $fileuploaded->slurp;
 
-            $self->app->log->debug('Bases->upload: uploaded file name is ' . $name);
+            #$self->app->log->debug('Bases->upload: uploaded file name is ' . $name);
 
             $fileuploaded->move_to('bases/' . b64_encode ( time . " :: $name" ) );
             $self->redirect_to('/bases');

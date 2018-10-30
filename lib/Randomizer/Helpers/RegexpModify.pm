@@ -16,10 +16,13 @@ sub register {
     regexp_modify => sub {
         my ($self, $param) = @_;
 
+        $self->app->log->debug("Start: regex modify");
+
         my $find = $param->{regex};
         my $replace = $param->{substition};
 
         tie (my @ry,"Tie::File",$param->{dir} . '/'. $param->{name} ) or die $!;
+
         $_=~ s/$find/$replace/ee for @ry;
 
         untie @ry;
