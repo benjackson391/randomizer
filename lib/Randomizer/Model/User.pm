@@ -74,7 +74,7 @@ package Randomizer::Model::User v0.0.1 {
 
         $self->db->do("DELETE FROM user_group WHERE user_group.user_id = $param->{user_id}");
 
-        for ( keys $param->{groups} ) {
+        for ( keys %{$param->{groups}} ) {
             if ( $param->{groups}->{$_} ) {
                 my $sql = ("INSERT INTO user_group(user_id, group_id) VALUES(?, ?)");
                 my $sth = $self->db->prepare($sql);
