@@ -26,9 +26,8 @@
             <div class="col-sm-8 customborder">
                 <div class="form-group">
                     <label>Тип билета</label>
-show_in_tickets
                     % foreach (sort {$a <=> $b} keys %$config) {
-                        <% if (my $config->{$_}->{show_in_tickets} eq 1 ) { %>
+                        <% if ($config->{$_}->{show_in_tickets}) { %>
                     <div class="radio">
                         <label><input type="radio" name="ticket_type" value="<%= $_ %>"><%= $config->{$_}->{name} %></label>
                     </div>
