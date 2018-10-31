@@ -2,6 +2,7 @@ package Randomizer;
 
 use Modern::Perl;
 use Mojo::Base 'Mojolicious';
+use Mojolicious::Plugin;
 use Mojolicious::Plugin::Authentication;
 use Mojolicious::Plugin::Bcrypt;
 use Mojolicious::Plugin::Database;
@@ -15,7 +16,14 @@ use Randomizer::Model::Group;
 sub startup {
     my $self = shift;
 
-    $self->plugin('Config');
+    if ($ENV{MOJO_MODE} eq 'development') {
+      warn 'MOJO_MODE development';
+    }
+
+
+    my $file = $ENV{RANDOMIZER_CONF} || 'randomizer.conf';
+    my $config = $self->plugin(Config => {file => $file});
+
     $self->renderer->encoding('utf8');
     $self->plugin('PODRenderer') if $self->config->{perldoc};
     $self->plugin('RenderFile');
@@ -90,12 +98,17 @@ sub startup {
         state $group = Randomizer::Model::Group->new(db => shift->db);
     });
 
-### Routing
+    ### Routing
 
     my $r = $self->routes;
 
     $r->any('/' => sub {
         my $c = shift;
+
+        if ($ENV{MOJO_MODE} eq 'development') {
+          $c->session(user => 'dev_user');
+          $c->redirect_to('/boxes');
+        }
 
         $c->redirect_to($c->config->{main_page}) if $c->session('user');
 
@@ -134,14 +147,17 @@ sub startup {
             4 => 'boxes', #create
         };
 
+        if ($ENV{MOJO_MODE} eq 'development') {
+          $c->session(user => 'dev_user');
+          return 1;
+        }
+
         if ( $c->session('user') ) {
             my $path = $c->tx->req->url->path;
             my $groups = $c->app->users->get_user_group(${ $c->current_user }{id}, 1);
 
             return 1 if $path eq 'boxes';
             for (@$groups) {
-                #$c->app->log->debug( @$groups );
-                #$c->app->log->debug( "access OK for user ${ $c->current_user }{login} to $path" ) if $path =~ /$access->{$_}/;
                 return 1 if $path =~ /$access->{$_}/;
             }
         }
@@ -155,16 +171,16 @@ sub startup {
     $logged_in->get('/tickets')->to('tickets#main');
     $logged_in->get('/tickets/config')->to('tickets#send_config');
     $logged_in->post('/tickets/create')->to('tickets#create');
-#    #bases
+    #bases
     $logged_in->get('/bases')->to('bases#main');
     $logged_in->post('/bases')->to('bases#upload');
-#    #logs
+    #logs
     $logged_in->get('/logs')->to('logs#main');
-#    #users
+    #users
     $logged_in->get('/users')->to('users#index');
     $logged_in->get('/users/<:user_id>')->to('users#index');
     $logged_in->post('/users/')->to('users#update');
-#
+
     $logged_in->get('/download')->to('download#main');
     $logged_in->get('/download/<:dir>')->to('download#main');
     $logged_in->get('/download/<:dir>/<:file>')->to('download#main');

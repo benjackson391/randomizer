@@ -42,7 +42,7 @@ sub update {
         $param{password} = $self->bcrypt( $self->param('password') ) if $self->param('password');
 
         my $groups = $self->app->groups->get_groups;
-        for (keys $groups) {
+        for (keys %$groups) {
             $param{groups}->{$groups->{$_}->{name}} = $self->param($groups->{$_}->{name});
         }
 

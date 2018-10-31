@@ -72,7 +72,7 @@ sub index {
             }
         }
 
-        for (sort {$a <=> $b} keys $param->{rows}) {
+        for (sort {$a <=> $b} keys %{$param->{rows}}) {
             if ($_ == $param->{rows}->{$_}) {
                 $param->{output}->{$_} = 1;
             } else {
@@ -93,7 +93,7 @@ sub index {
 
         my $temp_file_name =  'reprint_' . time . '.csv';
         open my $temp_file, '>>', $temp_file_name;
-        for (sort {$a <=> $b} keys $param->{output}) {
+        for (sort {$a <=> $b} keys %{$param->{output}}) {
             print $temp_file "$lines[$_]\n";
         }
         close $temp_file;

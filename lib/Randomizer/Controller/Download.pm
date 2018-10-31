@@ -43,7 +43,9 @@ sub main {
             }
         } else {
             my %items;
-            open (LOG, '<:utf8', 'log/logger') or die;
+            open (LOG, '<:utf8', 'log/logger') or {
+              mkdir 'log' and `touch log/logger`
+            };
 
             while (<LOG>) {
                 chomp($_);

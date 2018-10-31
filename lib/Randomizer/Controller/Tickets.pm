@@ -15,7 +15,6 @@ use utf8;
 sub main {
     my $self = shift;
         my $cnf = $self->app->config('ticket');
-
         $self->render( template => 'default/ticket', config => $cnf );
 }
 

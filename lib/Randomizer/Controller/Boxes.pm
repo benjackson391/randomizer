@@ -34,16 +34,6 @@ sub create {
     my $t_cnf = $self->app->config('ticket')->{$param{ticket_type}};
     my $l_cnf = $t_cnf->{include}->{$param{loto_type}};
 
-    #$l_cnf->{regex} = '^(\d*;\d*;\d*;\d*;)(\d{16})(\d{1})(.*)$' if $param{loto_type} = 2;
-
- #   $log->debug(Dumper($l_cnf));
-
-    $l_cnf->{create_ckeckfile} = 0;
-
-
-#    $log->debug(Dumper($l_cnf));
-
-
     return $self->redirect_to('/tickets')
         unless $self->param('upload_file');
     $fileuploaded = $self->req->upload('upload_file');
@@ -54,14 +44,13 @@ sub create {
     my $dir = 'uploaded/' . b64_encode ($self->session('user') . " :: " .  time );
     chomp($dir);
     mkdir $dir, 0755;
-    #$param{name} =~ s/(.+)\.\w+$/$1.$param{expansion}/;
-    ###
+
     if ( $param{name} =~ /(.*)\.(.*)/) {
         $param{name} = "$1.$param{expansion}";
     } else {
         $param{name} .= ".$param{expansion}";
     }
-    ###
+
     $log->debug("File name - " . $param{name});
     $fileuploaded->move_to("$dir/$param{name}");
     copy("$dir/$param{name}", "$dir/$param{name}.dist");
@@ -81,9 +70,6 @@ sub create {
         if ($file_check->[0]) {
             $log->debug("Start: regex fo sn - ok");
             if ($l_cnf->{regexp_modify}) {
-                #$self->app->log->debug("Start: regex modify");
-                #$self->app->log->debug("Start: regex modify" . $l_cnf->{regex});
-                #$self->app->log->debug("Start: regex" . $l_cnf->{substition});
                 $self->regexp_modify({
                     name => $param{name},
                     dir => $dir,
@@ -114,7 +100,6 @@ sub create {
                 }
                 $log->debug("Start: add date - ok");
             }
-
             if ($l_cnf->{add_date_simple}) {
                 $log->debug("Start: add date simple");
                 $self->add_data_simple({
@@ -126,22 +111,6 @@ sub create {
                 $l_cnf->{columns}++;
                 $log->debug("Start: add date simple - ok");
             }
-
-            if ($l_cnf->{create_ckeckfile}) {
-                $log->debug("Start: create checkfile");
-                $self->create_ckeckfile({
-                    name => $param{name},
-                    dir => $dir,
-                    regex_for_sn => $l_cnf->{regex_for_sn},
-                    order_number => $param{order_number},
-                    draw => $param{draw},
-                    p_n => $param{p_n},
-                    p_in_b => $param{p_in_b},
-                    t_in_p => $param{t_in_p},
-                });
-                $log->debug("Start: create checkfile - ok");
-            }
-
             if ($l_cnf->{add_null_row}) {
                 $log->debug("Start: add null row");
                 $self->add_null_row({
@@ -150,16 +119,6 @@ sub create {
                 });
                 $log->debug("Start: add null row - ok");
             }
-
-            if ($l_cnf->{xtoplus}) {
-                $log->debug("Start: x to plus");
-                $self->x_to_plus({
-                    name => $param{name},
-                    dir => $dir,
-                });
-                $log->debug("Start: x to plus - okQ");
-            }
-
             if ($l_cnf->{create_boxes}) {
                 $log->debug("Start: create_boxes");
                 my $fn = $self->create_boxes({
@@ -173,37 +132,18 @@ sub create {
                     date => $param{date},
                 });
                 $log->debug("create_boxes - ok") if $fn;
-                $l_cnf->{columns}++;
-            }
-
-            if ($l_cnf->{create_boxes}) {
+                # $l_cnf->{columns}++;
                 $log->debug("Start: create_ckeckfile_2");
                 my $fn = $self->create_ckeckfile_2({
                     name    => $param{name},
                     dir     => $dir,
                     count_1 => $param{count_1},
                     count_2 => $param{count_2},
-                    columns => $l_cnf->{columns},
+                    columns => ++$l_cnf->{columns},
                     regex_for_sn => $l_cnf->{regex_for_sn},
                 });
                 $log->debug("Start: create_ckeckfile_2") if $fn;
             }
-
-            #if ($l_cnf->{create_boxes}) {
-            #    $log->debug("Start: create_ckeckfile_2");
-            #    $self->create_ckeckfile_3({
-            #        name         => $param{name},
-            #        dir          => $dir,
-            #        count_1      => $param{count_1},
-            #        count_2      => $param{count_2},
-            #        columns      => $l_cnf->{columns},
-            #        regex_for_sn => $l_cnf->{regex_for_sn},
-            #        order_number => $param{order_number},
-            #        date         => $param{date},
-            #    });
-            #}
-
-
 
             my @files = File::Find::Rule->file()->name( '*.csv', '*.txt' )->in( $dir );
             $log->debug(Dumper \@files);
@@ -233,16 +173,13 @@ sub create {
                 );
                 return;
             }
-
         } else {
             $self->render(text => $file_check->[1] );
         }
     } else {
         $self->render(text => "Error: Can't find regexp for sn" );
     }
-
     $self->render( template => 'default/boxes' );
 }
-
 
 1;
