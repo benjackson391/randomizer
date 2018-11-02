@@ -171,6 +171,9 @@ sub startup {
     $logged_in->get('/tickets')->to('tickets#main');
     $logged_in->get('/tickets/config')->to('tickets#send_config');
     $logged_in->post('/tickets/create')->to('tickets#create');
+    #multiprint
+    $logged_in->get('/multiprint')->to('multiprint#main');
+    $logged_in->post('/multiprint')->to('multiprint#upload');
     #bases
     $logged_in->get('/bases')->to('bases#main');
     $logged_in->post('/bases')->to('bases#upload');
