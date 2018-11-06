@@ -21,47 +21,47 @@
             <form action="/multiprint" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <div style="display: inline-block">
-                        <label for="colimn_1">Доп. столбец 1</label>
-                        <input name="colimn_1" type="text" required>
+                        <label for="column_1">Доп. столбец 1</label>
+                        <input name="column_1" type="text" required>
                     </div>
                     <div style="display: inline-block;">
-                        <input name="files" type="file" enctype="multipart/form-data" required>
+                        <input name="file_1" type="file" enctype="multipart/form-data" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <div style="display: inline-block">
-                        <label for="colimn_2">Доп. столбец 2</label>
-                        <input name="colimn_2" type="text" required>
+                        <label for="column_2">Доп. столбец 2</label>
+                        <input name="column_2" type="text" required>
                     </div>
                     <div style="display: inline-block;">
-                        <input name="files" type="file" enctype="multipart/form-data" required>
+                        <input name="file_2" type="file" enctype="multipart/form-data" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <div style="display: inline-block">
-                        <label for="colimn_3">Доп. столбец 3</label>
-                        <input name="colimn_3" type="text" required>
+                        <label for="column_3">Доп. столбец 3</label>
+                        <input name="column_3" type="text">
                     </div>
                     <div style="display: inline-block;">
-                        <input name="files" type="file" enctype="multipart/form-data">
+                        <input name="file_3" type="file" enctype="multipart/form-data">
                     </div>
                 </div>
                 <div class="form-group">
                     <div style="display: inline-block">
-                        <label for="colimn_4">Доп. столбец 4</label>
-                        <input name="colimn_4" type="text" required>
+                        <label for="column_4">Доп. столбец 4</label>
+                        <input name="column_4" type="text">
                     </div>
                     <div style="display: inline-block;">
-                        <input name="files" type="file" enctype="multipart/form-data">
+                        <input name="file_4" type="file" enctype="multipart/form-data">
                     </div>
                 </div>
                 <div class="form-group">
                     <div style="display: inline-block">
-                        <label for="colimn_5">Доп. столбец 5</label>
-                        <input name="colimn_5" type="text" required>
+                        <label for="column_5">Доп. столбец 5</label>
+                        <input name="column_5" type="text">
                     </div>
                     <div style="display: inline-block;">
-                        <input name="files" type="file" enctype="multipart/form-data">
+                        <input name="file_5" type="file" enctype="multipart/form-data">
                     </div>
                 </div>
                 <button type="submit">Upload</button>
