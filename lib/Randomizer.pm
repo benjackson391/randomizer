@@ -157,7 +157,7 @@ sub startup {
             my $path = $c->tx->req->url->path;
             my $groups = $c->app->users->get_user_group(${ $c->current_user }{id}, 1);
 
-            return 1 if $path eq 'boxes';
+            #return 1 if $path eq 'boxes';
             for (@$groups) {
                 return 1 if $path =~ /$access->{$_}/;
             }

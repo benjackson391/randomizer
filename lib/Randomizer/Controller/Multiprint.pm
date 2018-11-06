@@ -6,7 +6,6 @@ use Data::Dumper;
 use File::Copy;
 use Encode;
 use utf8;
-use DDP;
 
 sub main {
     my $self = shift;
@@ -67,7 +66,6 @@ sub upload {
 
     open FILE, '>', "$dir/output.csv" or die;
     for my $k(sort {$a <=> $b} keys %$output) {
-        p $output->{$k};
         print FILE $output->{$k} . "\n";
     }
     close FILE;
