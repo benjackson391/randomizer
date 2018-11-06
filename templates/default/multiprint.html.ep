@@ -1,0 +1,4 @@
+% layout 'dashboard';
+<div class="container">
+    <%= %>
+</div>
