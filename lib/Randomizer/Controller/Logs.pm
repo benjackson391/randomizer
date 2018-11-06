@@ -10,7 +10,7 @@ sub main {
         $self->app->log->debug("log main");
         my %logs;
         my $line = 1;
-        open (my $fn, '<:utf8', 'log/logger') or $self->app->log->debug("Can't open log file");
+        open (my $fn, '<:utf8', 'log/logger') or {mkdir 'log' and `touch logger`};
         while (<$fn>) {
             $logs{$line} = $_;
             $line++;

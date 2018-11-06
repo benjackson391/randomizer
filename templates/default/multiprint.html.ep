@@ -1,4 +1,71 @@
 % layout 'dashboard';
 <div class="container">
-    <%= %>
+    <% if (my $message = flash 'message' ) { %>
+        <b><%= $message %></b><br>
+    <% } %>
+    <div class="row">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-4">
+            <h1>Мультипечать</h1>
+        </div>
+        <div class="col-sm-7">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <form action="/multiprint" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <div style="display: inline-block">
+                        <label for="colimn_1">Доп. столбец 1</label>
+                        <input name="colimn_1" type="text" required>
+                    </div>
+                    <div style="display: inline-block;">
+                        <input name="files" type="file" enctype="multipart/form-data" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div style="display: inline-block">
+                        <label for="colimn_2">Доп. столбец 2</label>
+                        <input name="colimn_2" type="text" required>
+                    </div>
+                    <div style="display: inline-block;">
+                        <input name="files" type="file" enctype="multipart/form-data" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div style="display: inline-block">
+                        <label for="colimn_3">Доп. столбец 3</label>
+                        <input name="colimn_3" type="text" required>
+                    </div>
+                    <div style="display: inline-block;">
+                        <input name="files" type="file" enctype="multipart/form-data">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div style="display: inline-block">
+                        <label for="colimn_4">Доп. столбец 4</label>
+                        <input name="colimn_4" type="text" required>
+                    </div>
+                    <div style="display: inline-block;">
+                        <input name="files" type="file" enctype="multipart/form-data">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div style="display: inline-block">
+                        <label for="colimn_5">Доп. столбец 5</label>
+                        <input name="colimn_5" type="text" required>
+                    </div>
+                    <div style="display: inline-block;">
+                        <input name="files" type="file" enctype="multipart/form-data">
+                    </div>
+                </div>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
 </div>
