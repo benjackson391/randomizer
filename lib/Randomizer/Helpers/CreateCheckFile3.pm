@@ -17,14 +17,15 @@ sub register {
             my $row = "$ln;";
             $row .= "$param->{order_number};";
             $row .= $param->{sn} . ';';
-            $param->{sn} =~ /(\d{16})(\d{1})/;
+            $param->{sn} =~ /(\d*)(\d)/;
             $row .= "$1;$2;";
             $row .= ($param->{r_count_1}) . ';';
             $row .= $param->{count_1} . ';';
             $row .= $param->{date} . ';';
+            $row .= $param->{draw} . ';';
 
             print CHECKLIST "$row\n";
-            #$self->app->log->debug( $row ) if $param->{ln} < 17;
+            $self->app->log->debug( $row ) if $param->{ln} < 17;
             close CHECKLIST;
 
             return 1;

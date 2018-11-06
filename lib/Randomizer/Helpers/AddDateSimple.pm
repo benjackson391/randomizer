@@ -15,49 +15,36 @@ sub register {
             #####
             my $max_l;
             tie (my @ry,"Tie::File",$param->{dir} . '/'. $param->{name} ) or die $!;
-            my @tmp_arr = split ';', $_;
-            my $l = scalar @tmp_arr;
-            $max_l = $l if $l > $max_l;
+            for (@ry) {
+                my @tmp_arr = split ';', $_;
+                my $l = scalar @tmp_arr;
+                $max_l = $l if $l > $max_l;
+            }
             untie @ry;
             #####
 
 
             my @rows;
             open INPUT, '<:utf8', "$param->{dir}/$param->{name}" or $self->app->log->debug("Can't oprn file: $!");
+            my $tmblr;
             while (<INPUT>) {
-                #my $line = $_;
-                #chomp $line;
-                #$line =~ s/\s+\z//;
                 s/\s+\z//;
                 chomp;
 
-                #$_ .= ';' if /^.*[^;]$/;
+                $_ .= ';' if /^.*[^;]$/;
 
                 my $count = () = $_ =~ /\Q;/g;
                 my $diff = $max_l - $count;
 
-                if ($diff) {
-                    $_ .= ';' for $diff;
-                }
-                
-
-                $_ .= ';' unless $count eq $param->{columns};
-
-                #unless ($count == ($param->{columns})) {
-                #    my $k = $param->{column} - $count;
-                #    $_ .= ';' x $k;
-                #}
-
-                #my @col = split ';', $_;
-                #my $k = ($param->{columns} - scalar @col) ;
+                #$self->app->log->debug( "diff: $diff max_l: $max_l count: $count" ) if $tmblr < 10;
+                $tmblr++;
 
 
+                $_ .= ';'x$diff if $diff;
 
-                #$self->app->log->debug(scalar @col . ' ' . $k . ' ' . (scalar @col + $k) . '|');
-
+                #$_ .= ';' unless $count eq $param->{columns};
                 push @rows, $_ . $param->{date} . ';';
             }
-            #$self->app->log->debug(Dumper(\@rows));
             close INPUT;
             open OUTPUT, '>', "$param->{dir}/$param->{name}" or $self->app->log->debug("Can't oprn file: $!");
             foreach (@rows) {

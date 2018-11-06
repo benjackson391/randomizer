@@ -128,6 +128,7 @@ sub create {
                     count_2 => $param{count_2},
                     columns => $l_cnf->{columns},
                     regex_for_sn => $l_cnf->{regex_for_sn},
+                    regex_for_draw => $l_cnf->{regex_for_draw},
                     order_number => $param{order_number},
                     date => $param{date},
                 });
@@ -141,6 +142,7 @@ sub create {
                     count_2 => $param{count_2},
                     columns => ++$l_cnf->{columns},
                     regex_for_sn => $l_cnf->{regex_for_sn},
+                    regex_for_draw => $l_cnf->{regex_for_draw},
                 });
                 $log->debug("Start: create_ckeckfile_2") if $fn;
             }

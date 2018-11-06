@@ -15,9 +15,9 @@ sub register {
             $param->{file} = [@fn];
             untie @fn;
 
+            ( my $draw = $param->{file}[0] ) =~ s/$param->{regex_for_draw}/$1/;
 
-
-            my $count = eval {int($param->{size} / ($param->{count_2}))};
+                my $count = eval {int($param->{size} / ($param->{count_2}))};
             $count-- unless $param->{size} % ($param->{count_2});
 
             open(CHECKLIST, ">>", $param->{dir} . '/check_list.csv') or die "Could not open 'check_list' $!\n";
@@ -44,7 +44,9 @@ sub register {
                     ( $s_pn = $param->{file}[ $param->{size} -1 ] ) =~ s/^.*;(\d+);(\d+);?(I)?;$/$2/;
                 }
 
-                my $row = "$ln;$f_sn;$s_sn;$f_bn;$s_bn;$f_pn;$s_pn;$param->{count_1};";
+
+
+                my $row = "$ln;$f_sn;$s_sn;$f_bn;$s_bn;$f_pn;$s_pn;$param->{count_1};$draw;";
                 print CHECKLIST "$row\n";
                 #$param->{b_n}++;
                 #$param->{p_n} += $param->{count_2};

@@ -8,7 +8,6 @@ sub register {
 
     my ($self, $app) = @_;
     $app->helper(
-        # name => $name,
 
         x_to_plus => sub {
             my ($self, $param) = @_;
