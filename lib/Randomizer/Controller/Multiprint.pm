@@ -47,7 +47,7 @@ sub upload {
 
         if ($l_cnf->{regexp_modify}) {
             my $find = $l_cnf->{regex};
-            my $replace = $param->{substition};
+            my $replace = $l_cnf->{substition};
             $_=~ s/$find/$replace/ee for @ry;
         }
 

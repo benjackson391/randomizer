@@ -28,7 +28,7 @@
                 </div>
                 <div class="form-group">
                     <div style="display: inline-block">
-                        <label for="column_1">Доп. столбец 1</label>
+                        <label for="column_1">Время для базы 1</label>
                         <input name="column_1" type="text" required>
                     </div>
                     <div style="display: inline-block;">
@@ -37,7 +37,7 @@
                 </div>
                 <div class="form-group">
                     <div style="display: inline-block">
-                        <label for="column_2">Доп. столбец 2</label>
+                        <label for="column_2">Время для базы 2</label>
                         <input name="column_2" type="text" required>
                     </div>
                     <div style="display: inline-block;">
@@ -46,7 +46,7 @@
                 </div>
                 <div class="form-group">
                     <div style="display: inline-block">
-                        <label for="column_3">Доп. столбец 3</label>
+                        <label for="column_3">Время для базы 3</label>
                         <input name="column_3" type="text">
                     </div>
                     <div style="display: inline-block;">
@@ -55,7 +55,7 @@
                 </div>
                 <div class="form-group">
                     <div style="display: inline-block">
-                        <label for="column_4">Доп. столбец 4</label>
+                        <label for="column_4">Время для базы 4</label>
                         <input name="column_4" type="text">
                     </div>
                     <div style="display: inline-block;">
@@ -64,7 +64,7 @@
                 </div>
                 <div class="form-group">
                     <div style="display: inline-block">
-                        <label for="column_5">Доп. столбец 5</label>
+                        <label for="column_5">Время для базы 5</label>
                         <input name="column_5" type="text">
                     </div>
                     <div style="display: inline-block;">
