@@ -11,6 +11,17 @@ sub register {
         add_data_simple => sub {
             my ($self, $param) = @_;
             $self->app->log->debug("ADS: $param->{dir}/$param->{name}");
+
+            #####
+            my $max_l;
+            tie (my @ry,"Tie::File",$param->{dir} . '/'. $param->{name} ) or die $!;
+            my @tmp_arr = split ';', $_;
+            my $l = scalar @tmp_arr;
+            $max_l = $l if $l > $max_l;
+            untie @ry;
+            #####
+
+
             my @rows;
             open INPUT, '<:utf8', "$param->{dir}/$param->{name}" or $self->app->log->debug("Can't oprn file: $!");
             while (<INPUT>) {
@@ -20,12 +31,15 @@ sub register {
                 s/\s+\z//;
                 chomp;
 
-                $_ .= ';' if /^.*[^;]$/;
+                #$_ .= ';' if /^.*[^;]$/;
 
                 my $count = () = $_ =~ /\Q;/g;
-                #$self->app->log->debug($count . " " .$param->{columns});
+                my $diff = $max_l - $count;
 
-
+                if ($diff) {
+                    $_ .= ';' for $diff;
+                }
+                
 
                 $_ .= ';' unless $count eq $param->{columns};
 
