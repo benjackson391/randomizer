@@ -144,7 +144,8 @@ sub startup {
             2 => 'download', #download
             3 => 'tickets', #create
             4 => 'reprint', #create
-            4 => 'boxes', #create
+            5 => 'boxes', #create
+            6 => 'multiprint'
         };
 
         if ($ENV{MOJO_MODE} eq 'development') {
