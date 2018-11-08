@@ -137,24 +137,11 @@ sub create {
                 }
                 if ($l_cnf->{add_date}) {
                     $log->debug("Start: add date");
-                    my @rows;
-                    open FILE, '<:utf8', "$dir/$param{name}";
-                    my $i = 0;
-                    while (<FILE>) {
-                        my $line1 = $_;
-                        my $line2 = <FILE>;
-                        foreach (($line1, $line2)) {
-                            chop;
-                            chop;
-                            $_ .= ';' if /^.*[^;]$/;
-                        }
-                        push @rows, "$line1$line2$param{date}\n";
-                        $i++;
-                    }
-                    open FILE, '>', "$dir/$param{name}";
-                    foreach (@rows) {
-                        print FILE $_ ;
-                    }
+                    $self->add_date({
+                        name => $param{name},
+                        dir  => $dir,
+                        date => $param{date},
+                    });
                     $log->debug("Start: add date - ok");
                 }
 

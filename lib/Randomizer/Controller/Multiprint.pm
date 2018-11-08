@@ -25,6 +25,8 @@ sub upload {
     my $t_cnf = $self->app->config('ticket')->{5};
     my $l_cnf = $t_cnf->{include}->{$self->param('loto_type')};
 
+    my $max_rows;
+
     for (1 .. 5) {
         next unless $self->req->upload('file_'.$_)->size;
         my $file = $self->req->upload('file_'.$_);
@@ -33,6 +35,11 @@ sub upload {
             column  => $self->param('column_'.$_),
             size    => $file->size,
         };
+
+        my $rows = () = $file->slurp =~ /\n/g;
+        if (!$max_rows || $max_rows < $rows) {$max_rows = $rows}
+        $self->app->log->debug("count $rows| max_rows $max_rows");
+
         $file->move_to("$dir/$data->{$_}->{name}");
     }
 
@@ -52,8 +59,9 @@ sub upload {
         }
 
         my $add_null_row = $self->add_null_row({
-            name     => "$dir/$data->{$k}->{name}",
-            add_null => 1000,
+            name      => "$dir/$data->{$k}->{name}",
+            add_null  => 1000,
+            max_rows => $max_rows,
         });
 
         for (@ry) {

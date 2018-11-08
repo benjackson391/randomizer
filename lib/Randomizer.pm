@@ -41,6 +41,7 @@ sub startup {
     $self->plugin('Randomizer::Helpers::Generator');
     $self->plugin('Randomizer::Helpers::FileCheck');
     $self->plugin('Randomizer::Helpers::AddDateSimple');
+    $self->plugin('Randomizer::Helpers::AddDate');
     $self->plugin('Randomizer::Helpers::CreateBoxes');
 
     $self->mode('development');

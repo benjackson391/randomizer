@@ -25,6 +25,19 @@ sub register {
                 $param->{null_row} = '0;' x @arr;
             }
 
+            #if ($param->{max_rows}) {
+            #    my $to_add = $param->{max_rows} - $lines;
+            #    if ($to_add) {
+            #        open my $tmp_fh, "+>>", $param->{name};
+            #        print "\n" if $last_line =~ /\S+/;
+            #        for (1 .. $to_add) {
+            #            print $tmp_fh $param->{null_row} . "\n";
+            #        }
+            #        close $tmp_fh;
+            #    }
+            #}
+
+
             my $residue = $lines % $param->{add_null};
 
             if ($residue) {
@@ -36,6 +49,8 @@ sub register {
                 }
                 close $fh;
             }
+
+
 
             return 1;
         }
