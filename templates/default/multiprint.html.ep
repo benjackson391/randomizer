@@ -22,8 +22,8 @@
                 <div class="form-group">
                     <label for="upload_file">Лотерея</label>
                     <div class="radio">
-                        <label><input type="radio" name="loto_type" value="1">РЛ</label>
-                        <label><input type="radio" name="loto_type" value="2">ЖЛ</label>
+                        <label><input type="radio" name="loto_type" value="1" required>РЛ</label>
+                        <label><input type="radio" name="loto_type" value="2" required>ЖЛ</label>
                     </div>
                 </div>
                 <div class="form-group">
