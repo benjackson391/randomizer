@@ -3,6 +3,7 @@ use base 'Mojolicious::Plugin';
 use Modern::Perl;
 use Data::Dumper;
 use Tie::File;
+use utf8;
 
 sub register {
 
@@ -19,6 +20,7 @@ sub register {
                 my @tmp_arr = split ';', $_;
                 my $l = scalar @tmp_arr;
                 $max_l = $l if $l > $max_l;
+
             }
             untie @ry;
             #####
@@ -38,11 +40,21 @@ sub register {
                 }
                 push @rows, "$line1$line2$param->{date}\n";
                 $i++;
+               # $self->app->log->debug($i . ' ' . $line1.$line2.$param->{date}) if $i > 362970;
             }
-            open FILE, '>', $param->{dir} . '/'. $param->{name};
+
+            #tie (my @ry2,"Tie::File",$param->{dir} . '/'. $param->{name} ) or die $!;
+            #    @ry2 = @rows;
+            #untie @ry2;
+            close FILE;
+            open FILE2, '>', $param->{dir} . '/'. $param->{name} or die;
+            my $ii = 1;
             foreach (@rows) {
-                print FILE $_ ;
+                $self->app->log->debug($_) if $ii > 362950;
+                print FILE2 $_ ;
+                $ii++;
             }
+            close FILE2;
 
             return 1;
         }

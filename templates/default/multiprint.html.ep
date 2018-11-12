@@ -27,6 +27,10 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="add_null">Кратность</label>
+                    <input name="add_null" id="add_null" type="number" value="1000" required>
+                </div>
+                <div class="form-group">
                     <div style="display: inline-block">
                         <label for="column_1">Время для базы 1</label>
                         <input name="column_1" type="text" required>

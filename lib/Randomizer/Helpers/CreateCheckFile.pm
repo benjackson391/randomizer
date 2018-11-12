@@ -24,7 +24,7 @@ sub register {
 #                l_n    => 1,  #line_number
 #            );
 
-            $self->app->log->debug( Dumper(\$param) );
+            #$self->app->log->debug( Dumper(\$param) );
             tie (my @fn,"Tie::File" ,$param->{dir} . '/'. $param->{name} ) or die $!;
             $param{size} = @fn;
             $param{file} = [@fn];
@@ -53,7 +53,7 @@ sub register {
                 print CHECKLIST "$row\n";
                 $param{b_n}++;
                 $param{p_n} += $param{p_in_b};
-                $self->app->log->debug( $row );
+                #$self->app->log->debug( $row );
             }
 
             close CHECKLIST;

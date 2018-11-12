@@ -20,8 +20,6 @@ sub upload {
     chomp($dir);
     mkdir $dir, 0755;
 
-    my $loto_type =  $self->param('loto_type');
-
     my $t_cnf = $self->app->config('ticket')->{5};
     my $l_cnf = $t_cnf->{include}->{$self->param('loto_type')};
 
@@ -32,55 +30,86 @@ sub upload {
         my $file = $self->req->upload('file_'.$_);
         $data->{$_} = {
             name    => $file->filename,
-            column  => $self->param('column_'.$_),
+            column  => $self->param('column_' . $_),
             size    => $file->size,
+            max_l_2 => 0,
         };
-
-        my $rows = () = $file->slurp =~ /\n/g;
-        if (!$max_rows || $max_rows < $rows) {$max_rows = $rows}
-        $self->app->log->debug("count $rows| max_rows $max_rows");
 
         $file->move_to("$dir/$data->{$_}->{name}");
     }
 
     for my $k (sort {$a <=> $b} keys %$data) {
-        my $max_l;
         tie (my @ry,"Tie::File", $dir . '/'. $data->{$k}->{name} ) or die $!;
-        for (@ry) {
-            my @tmp_arr = split ';', $_;
-            my $l = scalar @tmp_arr;
-            if (!$max_l || $l > $max_l) {$max_l = $l;}
-        }
-
         if ($l_cnf->{regexp_modify}) {
+            $self->app->log->debug('regexp_modify');
             my $find = $l_cnf->{regex};
             my $replace = $l_cnf->{substition};
             $_=~ s/$find/$replace/ee for @ry;
         }
+        untie @ry;
+    }
 
-        my $add_null_row = $self->add_null_row({
-            name      => "$dir/$data->{$k}->{name}",
-            add_null  => 1000,
-            max_rows => $max_rows,
-        });
 
+
+    for my $k (sort {$a <=> $b} keys %$data) {
+        tie (my @ry,"Tie::File", $dir . '/'. $data->{$k}->{name} ) or die $!;
+            my $max_l = 0;
+            for (@ry) {
+                s/\s+\z//;
+                chomp;
+                $_ .= ';' if /^.*[^;]$/;
+                my @row = split ';', $_;
+                my $l = scalar @row;
+                $max_l = $l if $l > $max_l;
+            }
+            $data->{$k}->{max_l} = $max_l;
+        untie @ry;
+    }
+
+    $self->app->log->debug(Dumper $data);
+
+    for my $k (sort {$a <=> $b} keys %$data) {
+
+        tie (my @ry,"Tie::File", $dir . '/'. $data->{$k}->{name} ) or die $!;
+
+
+
+        my $i;
         for (@ry) {
             s/\s+\z//;
             chomp;
-            $_ .= ';' if /^.*[^;]$/;
+
             my $count = () = $_ =~ /\Q;/g;
-            my $diff = $max_l - $count;
-            $_ .= ';'x$diff if $diff;
+            my @split = split ';', $_;
+            my $scalar = scalar @split;
+            my $diff = $data->{$k}->{max_l} - $count;
+            $self->app->log->debug("$diff = $data->{$k}->{max_l} - $count ( $scalar ) $_") if $i++ < 10;
+            $_ .= ';'x int($diff) if $diff;
             $_ .= "$data->{$k}->{column};\n";
         }
+
+        pop @ry unless $ry[-1] =~ /[\w\d]/;
+
+        my $diff = $max_rows - scalar(@ry);
+        $self->app->log->debug("diff $diff max_rows $max_rows  scalar(\@ry) "  .  scalar(@ry));
+        if ($diff) {
+            for (1 .. $max_rows - scalar(@ry)) {
+                push @ry, '0;' x ($data->{$k}->{max_l_2} + 1) . "\n";
+            }
+        }
+
         untie @ry;
     }
 
     my $output;
 
     for my $k (sort {$a <=> $b} keys %$data) {
+        next if not $data->{$k}->{name};
         my $ln;
-        tie (my @ry,"Tie::File",$dir . '/'. $data->{$k}->{name} ) or die $!;
+        my $path = $dir . '/'. $data->{$k}->{name};
+        $self->app->log->debug($path);
+
+        tie (my @ry,"Tie::File", $path) or die $!;
         for (@ry) {
             $output->{int($ln++)} .= $_;
         }
@@ -92,6 +121,11 @@ sub upload {
         print FILE $output->{$k} . "\n";
     }
     close FILE;
+
+    $self->add_null_row({
+        name      => "$dir/output.csv",
+        add_null  => $self->param('add_null'),
+    });
 
     $self->render_file(
         'filepath'            => "$dir/output.csv",

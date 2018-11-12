@@ -25,7 +25,7 @@ sub register {
             $row .= $param->{draw} . ';';
 
             print CHECKLIST "$row\n";
-            $self->app->log->debug( $row ) if $param->{ln} < 17;
+            #$self->app->log->debug( $row ) if $param->{ln} < 17;
             close CHECKLIST;
 
             return 1;

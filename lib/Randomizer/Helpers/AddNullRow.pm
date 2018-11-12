@@ -18,25 +18,13 @@ sub register {
             my $lines = $#lines + 1;
             my $first_line = $lines[0];
             my $last_line = $lines[$#lines];
+            #$lines-- unless $last_line =~ /[\w\d]]/;
             untie @lines;
 
             if (! $param->{null_row}) {
                 my @arr = split ';', $first_line;
                 $param->{null_row} = '0;' x @arr;
             }
-
-            #if ($param->{max_rows}) {
-            #    my $to_add = $param->{max_rows} - $lines;
-            #    if ($to_add) {
-            #        open my $tmp_fh, "+>>", $param->{name};
-            #        print "\n" if $last_line =~ /\S+/;
-            #        for (1 .. $to_add) {
-            #            print $tmp_fh $param->{null_row} . "\n";
-            #        }
-            #        close $tmp_fh;
-            #    }
-            #}
-
 
             my $residue = $lines % $param->{add_null};
 
