@@ -143,6 +143,7 @@ sub create {
                     columns => ++$l_cnf->{columns},
                     regex_for_sn => $l_cnf->{regex_for_sn},
                     regex_for_draw => $l_cnf->{regex_for_draw},
+                    check_3        => 1,
                 });
                 $log->debug("Start: create_ckeckfile_2") if $fn;
             }
