@@ -63,6 +63,10 @@ sub register {
                         $log->debug($_);
                         $_ =~ s/^(\d*;)(\d*)(\d);(\d*)(\d)(;.*)/$1$2$3;$2;$3;$4$5;$4;$5$6/;
                         $_ =~ s/^(\d*;)(0;0;)(.*)$/$1$2$2$3/ if $_ =~ /^\d*;0;0;.*$/;
+                        $_ =~ /^(.*;)(\d*)(;\d*;\d*;\d*;)$/;
+                        my $count_2_tmp = $2;
+                        $count_2_tmp = (length($count_2_tmp) > 5) ? $count_2_tmp : '0' x (6 - length($count_2_tmp)) . $count_2_tmp;
+                        $_ = $1 . $count_2_tmp . $3;
                         print CHECKLIST3 "$_\n";
                     }
                 close CHECKLIST3;
