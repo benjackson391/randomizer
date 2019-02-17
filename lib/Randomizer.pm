@@ -25,7 +25,7 @@ sub startup {
     my $config = $self->plugin(Config => {file => $file});
 
     $self->renderer->encoding('utf8');
-    $self->plugin('PODRenderer') if $self->config->{perldoc};
+    # $self->plugin('PODRenderer') if $self->config->{perldoc};
     $self->plugin('RenderFile');
     $self->plugin('bcrypt', { cost => 4 });
     $self->secrets($self->config('secrets'));
@@ -146,7 +146,8 @@ sub startup {
             3 => 'tickets', #create
             4 => 'reprint', #create
             5 => 'boxes', #create
-            6 => 'multiprint'
+            6 => 'multiprint',
+            7 => 'rzd', #download
         };
 
         if ($ENV{MOJO_MODE} eq 'development') {
@@ -195,6 +196,9 @@ sub startup {
 
     $logged_in->get('/boxes')->to('boxes#index');
     $logged_in->post('/boxes')->to('boxes#create');
+
+    $logged_in->get('/rzd')->to('rzd#index');
+    $logged_in->post('/rzd')->to('rzd#gen');
 }
 
 1;

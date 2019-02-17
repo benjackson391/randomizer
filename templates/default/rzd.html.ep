@@ -1,0 +1,72 @@
+% layout 'dashboard';
+<div class="container">
+    <div class="row">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-4">
+            <h1>РЖД</h1>
+        </div>
+        <div class="col-sm-7">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+        </div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+
+    <form method="post" action="/rzd" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="order_number">Номер заказа</label>
+            <input type="text" class="form-control" id="order_number" name="order_number" placeholder="..." required>
+        </div>
+        <div class="form-group">
+            <label for="flow_number">Количество потоков</label>
+            <input type="text" class="form-control" id="flow_number" name="flow_number" placeholder="..." required>
+        </div>
+        <div class="form-group">
+            <label for="f_p_n">Номер первой пачки</label>
+            <input type="text" class="form-control" id="f_p_n" name="f_p_n" placeholder="..." required>
+        </div>
+        <div class="form-group">
+            <label for="pack_count">Количество пачек</label>
+            <input type="text" class="form-control" id="pack_count" name="pack_count" placeholder="..." required>
+        </div>
+        <div class="form-group">
+            <label for="f_t_n">Номер первого билета</label>
+            <input type="text" class="form-control" id="f_t_n" name="f_t_n" placeholder="..." required>
+        </div>
+        <div class="form-group">
+            <label for="ticket_count">Количество билетов</label>
+            <input type="text" class="form-control" id="ticket_count" name="ticket_count" placeholder="..." required>
+        </div>
+        <div class="form-group">
+            <label for="add_row_count">Количество дополнительных строк</label>
+            <input type="text" class="form-control" id="add_row_count" name="add_row_count" placeholder="..." required>
+        </div>
+        <div class="form-group">
+            <label for="">Расширение</label>
+            <div class="radio">
+              <label><input type="radio" name="expansion" value="txt" required>TXT</label>
+            </div>
+            <div class="radio">
+              <label><input type="radio" name="expansion"  value="csv">CSV</label>
+            </div>
+        </div>
+        <button id="submit" type="submit" class="btn btn-primary">Сгенерировать!</button>
+    </form>
+</div>
+</div>
+</div>
+
+
+<script>
+    document.getElementById('order_number').value = '000';
+    document.getElementById('flow_number').value = 6;
+    document.getElementById('f_p_n').value = '000001';
+    document.getElementById('pack_count').value = 12;
+    document.getElementById('f_t_n').value = '0001';
+    document.getElementById('ticket_count').value = 10;
+    document.getElementById('add_row_count').value = 0;
+</script>
