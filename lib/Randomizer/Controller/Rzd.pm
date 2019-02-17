@@ -1,6 +1,6 @@
 package Randomizer::Controller::Rzd;
 use Mojo::Base 'Mojolicious::Controller';
-use DDP;
+# use DDP;
 use utf8;
 
 sub index {
