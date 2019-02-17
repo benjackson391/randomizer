@@ -33,9 +33,18 @@ sub gen {
         $index = 0 if ($pc % $param->{flow_number} == 0);
     }
     my $str;
+    my $f_str;
     for my $i (0 .. ( @{$output[0]} - 1 )) {
         $str .= join(';', @{ $output[$_][$i] }) . ";" for (0 .. (@output - 1));
+        $f_str = $str if $i == 20;
         $str .= "\n";
+    }
+
+    if ($param->{add_row_count}) {
+        $f_str =~ s/\d/0/;
+        for (1 .. $param->{add_row_count}) {
+            $str .= $f_str . "\n";
+        }
     }
     # p $str;
     $self->render_file(
