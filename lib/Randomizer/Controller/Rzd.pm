@@ -1,6 +1,6 @@
 package Randomizer::Controller::Rzd;
 use Mojo::Base 'Mojolicious::Controller';
-use DDP;
+# use DDP;
 use utf8;
 
 sub index {
@@ -23,7 +23,7 @@ sub gen {
     my $index = 0;
     for my $pc (1 .. $param->{pack_count}) {
         my $n1 = (length($pc) > $fpn_l - 1) ? $pc : '0' x ($fpn_l - length($pc)) . $pc;
-        push(@{$output[$index]}, [$n1, "---"]) for (1 .. 20);
+        push(@{$output[$index]}, [$n1, "----"]) for (1 .. 20);
 
         for my $tc (1 .. $param->{ticket_count}) {
             my $n2 = (length($tc) > $ftn_l - 1) ? $tc : '0' x ($ftn_l - length($tc)) . $tc;
